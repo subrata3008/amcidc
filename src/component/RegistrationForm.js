@@ -5,7 +5,9 @@ import { validationSchema } from "../utils";
 import TextField from "@mui/material/TextField";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-import InputLabel from "@mui/material/InputLabel";
+//import InputLabel from "@mui/material/InputLabel";
+import Autocomplete from "@mui/material/Autocomplete";
+import Box from "@mui/material/Box";
 import FormControl from "@mui/material/FormControl";
 import FormHelperText from "@mui/material/FormHelperText";
 import FormLabel from "@mui/material/FormLabel";
@@ -97,7 +99,9 @@ const RegistrationForm = () => {
 
   return (
     <div className="registraion-wrapper">
-      <h3>Renewable supplier registration form to sell renewable raw materials</h3>
+      <h3>
+        Renewable supplier registration form to sell renewable raw materials
+      </h3>
       <div className="form-wrapper">
         <form onSubmit={formik.handleSubmit}>
           <FormControl className="input-wrapper">
@@ -194,9 +198,9 @@ const RegistrationForm = () => {
             />
           </FormControl>
           <FormControl className="input-wrapper">
-            <InputLabel id="demo-simple-select-label" className="formLabel">
+            <FormLabel component="legend" className="formLabel">
               Country
-            </InputLabel>
+            </FormLabel>
             <Select
               labelId="country"
               variant="standard"
@@ -289,10 +293,9 @@ const RegistrationForm = () => {
           </FormControl>
 
           <FormControl className="input-wrapper">
-            <InputLabel className="formLabel" id="demo-simple-select-label">
-              {" "}
+            <FormLabel component="legend" className="formLabel">
               Please choose the type of raw materials you supply
-            </InputLabel>
+            </FormLabel>
             <Select
               labelId="suppliedRawMaterial"
               variant="standard"
@@ -356,10 +359,31 @@ const RegistrationForm = () => {
             </RadioGroup>
           </FormControl>
 
-          <FormControl className="input-wrapper">
-            <FormLabel component="legend" className="formLabel">
-              Please specify the countries of origin of the raw materials
-            </FormLabel>
+          <FormControl className="input-wrapper"> 
+            <Autocomplete
+              variant="standard"
+              id="country-select-demo"
+              sx={{ width: "100%" }}
+              options={countryList}
+              autoHighlight
+              getOptionLabel={(option) => option.label}
+              renderOption={(props, option) => (
+                <Box component="li">
+                  {option.label} ({option.code})
+                </Box>
+              )}
+              renderInput={(params) => (
+                <TextField
+                  variant="standard"
+                  {...params}
+                  label="Please specify the countries of origin of the raw materials"
+                  inputProps={{
+                    ...params.inputProps,
+                    autoComplete: "new-password", // disable autocomplete and autofill
+                  }}
+                />
+              )}
+            />
             <Select
               labelId="suppliedRawMaterial"
               variant="standard"
@@ -378,7 +402,6 @@ const RegistrationForm = () => {
               ))}
             </Select>
           </FormControl>
-
 
           <FormControl className="input-wrapper">
             <FormLabel component="legend" className="formLabel">
@@ -402,7 +425,6 @@ const RegistrationForm = () => {
               ))}
             </Select>
           </FormControl>
-
 
           <FormControl component="fieldset" className="input-wrapper">
             <FormLabel component="legend" className="formLabel">
@@ -478,7 +500,7 @@ const RegistrationForm = () => {
               Do you have any other comments or feedback?
             </FormLabel>
             <TextField
-              id="feeback" 
+              id="feeback"
               name="feeback"
               multiline
               value={formik.feeback}
