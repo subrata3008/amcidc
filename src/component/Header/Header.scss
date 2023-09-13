@@ -1,0 +1,28 @@
+.header{
+    width: 100%;
+    display: flex;
+    padding: 2%;
+    background: #68bc29;
+    .logo{
+        border-radius: 35%;
+        height: 50px;
+        width: 50px;
+        border: 1px solid white;
+        padding: 1vw;
+        background: #e7efe3;
+        //background: rgb(252, 252, 252);
+    }
+    .subText{
+        margin: 0;
+        font-size: 25px;
+        color: white;
+        padding-top: 2%;
+        padding-left: 2%;
+        letter-spacing: 0.01px; 
+    }
+}
+.effect1{
+    -webkit-box-shadow: 0 10px 6px -6px #777;
+       -moz-box-shadow: 0 10px 6px -6px #777;
+            box-shadow: 0 10px 6px -6px #777;
+  }
