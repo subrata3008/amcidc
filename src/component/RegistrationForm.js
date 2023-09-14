@@ -57,7 +57,8 @@ const RegistrationForm = () => {
         type: values.file.type,
         size: `${values.file.size} bytes`,
       });
-      alert(JSON.stringify(values, null, 2));
+      console.log(JSON.stringify(values, null, 2));      
+      alert("Data successfully submitted, please check you e-mail for confirmation");
       submitRegistrationForm(values);
     },
   });
@@ -91,8 +92,7 @@ const RegistrationForm = () => {
       })
       .catch((error) => {
         //this.setState({ errorMessage: error.toString() });
-        formik.resetForm();
-        console.log(formik.values);
+        formik.resetForm(); 
         console.error("There was an error!", error);
       });
   };
@@ -208,8 +208,7 @@ const RegistrationForm = () => {
               name="country"
               value={formik.values.country}
               onChange={(event) => {
-                formik.setFieldValue("country", event.target.value);
-                console.log(formik.values.country);
+                formik.setFieldValue("country", event.target.value); 
               }}
             >
               {countryList.map((option) => (
@@ -359,31 +358,10 @@ const RegistrationForm = () => {
             </RadioGroup>
           </FormControl>
 
-          <FormControl className="input-wrapper"> 
-            <Autocomplete
-              variant="standard"
-              id="country-select-demo"
-              sx={{ width: "100%" }}
-              options={countryList}
-              autoHighlight
-              getOptionLabel={(option) => option.label}
-              renderOption={(props, option) => (
-                <Box component="li">
-                  {option.label} ({option.code})
-                </Box>
-              )}
-              renderInput={(params) => (
-                <TextField
-                  variant="standard"
-                  {...params}
-                  label="Please specify the countries of origin of the raw materials"
-                  inputProps={{
-                    ...params.inputProps,
-                    autoComplete: "new-password", // disable autocomplete and autofill
-                  }}
-                />
-              )}
-            />
+          <FormControl className="input-wrapper">  
+            <FormLabel component="legend" className="formLabel">
+              Please specify the countries of origin of the raw materials
+            </FormLabel>
             <Select
               labelId="suppliedRawMaterial"
               variant="standard"
@@ -392,11 +370,10 @@ const RegistrationForm = () => {
               value={formik.values.rawCoo}
               onChange={(event) => {
                 formik.setFieldValue("rawCoo", event.target.value);
-                console.log(formik.values.rawCoo);
               }}
             >
               {countryList.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
+                <MenuItem key={'rawCoo'+ option.value} value={option.value}>
                   {option.label}
                 </MenuItem>
               ))}
@@ -415,11 +392,10 @@ const RegistrationForm = () => {
               value={formik.values.rawCooDest}
               onChange={(event) => {
                 formik.setFieldValue("rawCooDest", event.target.value);
-                console.log(formik.values.rawCooDest);
               }}
             >
               {countryList.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
+                <MenuItem key={'rawCooDest'+option.value} value={option.value}>
                   {option.label}
                 </MenuItem>
               ))}
@@ -469,6 +445,7 @@ const RegistrationForm = () => {
           <FormControl className="input-wrapper">
             <TextField
               fullWidth
+              variant="standard"
               id="validCert"
               name="validCert"
               label="Please provide your valid certificate number below (if applicable). E.g. EU-ISCC-Cert-DE100-12345678
@@ -488,8 +465,7 @@ const RegistrationForm = () => {
                 hidden
                 type="file"
                 onChange={(event) => {
-                  formik.setFieldValue("file", event.currentTarget.files[0]);
-                  console.log(formik.values);
+                  formik.setFieldValue("file", event.currentTarget.files[0]); 
                 }}
               />
             </Button>
