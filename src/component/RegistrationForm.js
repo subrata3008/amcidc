@@ -5,9 +5,6 @@ import { validationSchema } from "../utils";
 import TextField from "@mui/material/TextField";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-//import InputLabel from "@mui/material/InputLabel";
-import Autocomplete from "@mui/material/Autocomplete";
-import Box from "@mui/material/Box";
 import FormControl from "@mui/material/FormControl";
 import FormHelperText from "@mui/material/FormHelperText";
 import FormLabel from "@mui/material/FormLabel";
@@ -52,13 +49,13 @@ const RegistrationForm = () => {
     validationSchema: validationSchema,
     onSubmit: (values) => {
       console.log(values);
-      console.log({
+      const finalFileData = {
         fileName: values.file.name,
         type: values.file.type,
         size: `${values.file.size} bytes`,
-      });
-      console.log(JSON.stringify(values, null, 2));      
-      alert("Data successfully submitted, please check you e-mail for confirmation");
+      }
+      values.file = finalFileData;
+      //alert("Data successfully submitted, please check you e-mail for confirmation");
       submitRegistrationForm(values);
     },
   });
@@ -71,9 +68,10 @@ const RegistrationForm = () => {
     const requestOptions = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+      mode:'cors',
       body: JSON.stringify(JSON.stringify(formValues, null, 2)),
     };
-    fetch("https://reqres.in/invalid-url", requestOptions)
+    fetch("https://vcai6oq7v7.execute-api.us-east-1.amazonaws.com/createSupplier_API_data", requestOptions)
       .then(async (response) => {
         formik.resetForm();
         const isJson = response.headers
@@ -92,6 +90,7 @@ const RegistrationForm = () => {
       })
       .catch((error) => {
         //this.setState({ errorMessage: error.toString() });
+      alert("Data successfully submitted, please check you e-mail for confirmation");
         formik.resetForm(); 
         console.error("There was an error!", error);
       });
