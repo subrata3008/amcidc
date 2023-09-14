@@ -68,7 +68,7 @@ const RegistrationForm = () => {
     const requestOptions = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      mode:'cors',
+      mode:'no-cors',
       body: JSON.stringify(JSON.stringify(formValues, null, 2)),
     };
     fetch("https://vcai6oq7v7.execute-api.us-east-1.amazonaws.com/createSupplier_API_data", requestOptions)
