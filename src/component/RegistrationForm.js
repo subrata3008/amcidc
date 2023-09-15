@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useFormik } from "formik";
 import Button from "@mui/material/Button";
 import { validationSchema } from "../utils";
@@ -22,6 +22,7 @@ import {
 } from "../constants";
 
 const RegistrationForm = () => {
+  const [fileName,setFilename] = useState('');
   const formik = useFormik({
     initialValues: {
       companyName: "",
@@ -71,26 +72,28 @@ const RegistrationForm = () => {
       mode:'no-cors',
       body: JSON.stringify(JSON.stringify(formValues, null, 2)),
     };
-    fetch("https://vcai6oq7v7.execute-api.us-east-1.amazonaws.com/createSupplier_API_data", requestOptions)
+    fetch("https://ztb2dcu4lf.execute-api.us-east-1.amazonaws.com/createNew_Supplier_data", requestOptions)
       .then(async (response) => {
         formik.resetForm();
-        const isJson = response.headers
-          .get("content-type")
-          ?.includes("application/json");
-        const data = isJson && (await response.json());
+        // const isJson = response.headers
+        //   .get("content-type")
+        //   ?.includes("application/json");
+        // const data = isJson && (await response.json());
 
         // check for error response
-        if (!response.ok) {
+        if (!response.code === 200) {
+          alert("Data successfully submitted, please check you e-mail for confirmation");
           // get error message from body or default to response status
-          const error = (data && data.message) || response.status;
-          return Promise.reject(error);
+          // const error = (data && data.message) || response.status;
+          // return Promise.reject(error);
         }
 
         // this.setState({ postId: data.id })
       })
       .catch((error) => {
         //this.setState({ errorMessage: error.toString() });
-      alert("Data successfully submitted, please check you e-mail for confirmation");
+        
+        alert("Some error occured");
         formik.resetForm(); 
         console.error("There was an error!", error);
       });
@@ -457,7 +460,7 @@ const RegistrationForm = () => {
 
           <FormControl className="button-wrapper">
             <Button variant="contained" component="label">
-              Upload{" "}
+              Upload 
               <input
                 id="file"
                 name="file"
@@ -465,9 +468,10 @@ const RegistrationForm = () => {
                 type="file"
                 onChange={(event) => {
                   formik.setFieldValue("file", event.currentTarget.files[0]); 
+                  setFilename(event.currentTarget.files[0].name)
                 }}
               />
-            </Button>
+            </Button>{fileName}
           </FormControl>
 
           <FormControl className="textarea-wrapper">
