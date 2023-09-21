@@ -541,10 +541,11 @@ const removeRow = (index) =>{
                 return <>   
                 
             <FormControl className="customInput-wrapper">
-                <FormLabel component="label" className="batchFormlabel">
+                <FormLabel key={index} component="label" className="batchFormlabel">
                  {`Batch ${index+1}:`}
                 </FormLabel>            
                 <TextField
+                 key={index}
                 fullWidth
                 id={batch.quantity}
                 name="batch"
@@ -555,6 +556,7 @@ const removeRow = (index) =>{
                 autoComplete="off"
               />
               <TextField
+               key={index}
                 fullWidth
                 id={batch.origin}
                 name={batch.origin}
@@ -565,12 +567,12 @@ const removeRow = (index) =>{
                 autoComplete="off"
               />
               
-            <p className={batchDetails.length < 2 ? 'remove notAllowed' : 'remove'} onClick={()=>removeRow(index)}>-</p>
+            <p title="Remove" className={batchDetails.length < 2 ? 'remove notAllowed' : 'remove'} onClick={()=>removeRow(index)}>-</p>
                 </FormControl> 
                 </>
               })
             }  
-            <p className="add" onClick={addNewRow}> + </p> 
+            <p className="add" title="Add new Batch" onClick={addNewRow}> + </p> 
 
             <FormControl className="input-wrapper">
               <Button
