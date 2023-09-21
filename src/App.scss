@@ -3,6 +3,28 @@
   font-family: 'Roboto', sans-serif;
   overflow-x: hidden;
   background: #e7efe3;
+  .nav-wrapper{
+    list-style: none;
+    display: flex;
+    padding: 1vw 0 1vw 6vw;
+    margin: 0 0 4vw 0;
+    background: #cafaa7;
+    li{
+      padding-right: 2vw;
+    }
+    a{
+      text-decoration: none;
+      color: gray;
+    } 
+    .active{
+      color: #7777ce;
+    }
+  }
+}
+.effect1{
+  -webkit-box-shadow: 0 10px 6px -6px #777;
+     -moz-box-shadow: 0 10px 6px -6px #777;
+          box-shadow: 0 10px 6px -6px #777;
 }
 iframe#webpack-dev-server-client-overlay{display:none!important}
  
