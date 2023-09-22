@@ -1,17 +1,21 @@
 import React, { useState } from "react";
 import { useFormik } from "formik";
-import Button from "@mui/material/Button";
+import axios from "axios";
+import {
+  TextField,
+  Radio,
+  Checkbox,
+  FormLabel,
+  FormControlLabel,
+  RadioGroup,
+  FormControl,
+  Button,
+  Snackbar,  
+  Select,
+  FormHelperText,
+  MenuItem
+} from "@mui/material"; 
 import { validationSchema } from "../../utils";
-import TextField from "@mui/material/TextField";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import FormHelperText from "@mui/material/FormHelperText";
-import FormLabel from "@mui/material/FormLabel";
-import RadioGroup from "@mui/material/RadioGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-import Radio from "@mui/material/Radio";
 import "./RegistrationForm.scss";
 import {
   activityScopeData,
@@ -19,8 +23,7 @@ import {
   suppliedRawMaterialList,
   countryList,
   partofVolutarySchemeList,
-} from "../../constants";
-import Snackbar from "@mui/material/Snackbar";
+} from "../../constants"; 
 import MuiAlert from "@mui/material/Alert";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
@@ -61,9 +64,10 @@ const RegistrationForm = () => {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      console.log(values);
-      console.log(selectedFile); 
+      // console.log(values);
+      // console.log(selectedFile); 
       values.file = selectedFile;
+      console.log(values);
       //alert("Data successfully submitted, please check you e-mail for confirmation");
       submitRegistrationForm(values);
     },
@@ -74,34 +78,41 @@ const RegistrationForm = () => {
    * @param {*} formValues
    */
   const submitRegistrationForm = (formValues) => {
-    const requestOptions = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      mode: "no-cors",
-      body: JSON.stringify(JSON.stringify(formValues, null, 2)),
-    };
-    fetch(
-      "https://ztb2dcu4lf.execute-api.us-east-1.amazonaws.com/createNew_Supplier_data",
-      requestOptions
-    ).then((response) => {
-        console.log(response);
-        formik.resetForm();
-        setFilename("");
-        setOpenAlert(!openAlert);
-        setSuccess('success');
-        setMsg('Data successfully submitted, please check you e-mail for confirmation'); 
-      })
-      .catch((error) => { 
-        setOpenAlert(!openAlert);
-        formik.resetForm();
-        setFilename("");
-        setSuccess('error');
-        setMsg('Some error occured');
-        console.error("There was an error!", error);
-      });
-  };
+    console.log(Object.keys(formValues))
+    //const formData = new FormData();
+    //console.log(Object.keys.apply(formValues));
+    // Object.keys(formValues).map((eachData) => { 
+    //   debugger;
+    //   console.log(formValues[eachData]);
+    //   formData.append(eachData.toString(),formValues.eachData);
+    // }) 
+    // console.log(formData); 
+    
+    axios
+    .post('https://ztb2dcu4lf.execute-api.us-east-1.amazonaws.com/createNew_Supplier_data', formValues, {
+      headers: {
+        "Content-Type": "multipart/form-data", 
+      }})
+    .then((res) => {
+      console.log(res);
+      formik.resetForm();
+      setFilename("");
+      setOpenAlert(!openAlert);
+      setSuccess('success');
+      setMsg('Data successfully submitted, please check you e-mail for confirmation');
+    })
+    .catch((err) => {
+      setOpenAlert(!openAlert);
+      formik.resetForm();
+      setFilename("");
+      setSuccess('error');
+      setMsg('Some error occured');
+      console.error("There was an error!", err);
+    }
+    );
+}; 
 
-  return (
+return (
     <>
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
