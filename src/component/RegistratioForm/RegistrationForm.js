@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useFormik } from "formik";
 import Button from "@mui/material/Button";
-import { validationSchema } from "../utils";
+import { validationSchema } from "../../utils";
 import TextField from "@mui/material/TextField";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
@@ -19,7 +19,7 @@ import {
   suppliedRawMaterialList,
   countryList,
   partofVolutarySchemeList,
-} from "../constants";
+} from "../../constants";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 
@@ -29,7 +29,8 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 
 const RegistrationForm = () => {
   const [openAlert, setOpenAlert] = useState(false);
-  const [fileName, setFilename] = useState("");
+  const [fileName, setFilename] = useState(""); 
+  const [selectedFile, setSelectedFile] = useState();
   const [success, setSuccess] = useState('success');
   const [msg, setMsg] = useState('');
   
@@ -61,12 +62,8 @@ const RegistrationForm = () => {
     validationSchema: validationSchema,
     onSubmit: (values) => {
       console.log(values);
-      const finalFileData = {
-        fileName: values.file.name,
-        type: values.file.type,
-        size: `${values.file.size} bytes`,
-      };
-      values.file = finalFileData;
+      console.log(selectedFile); 
+      values.file = selectedFile;
       //alert("Data successfully submitted, please check you e-mail for confirmation");
       submitRegistrationForm(values);
     },
@@ -87,7 +84,7 @@ const RegistrationForm = () => {
       "https://ztb2dcu4lf.execute-api.us-east-1.amazonaws.com/createNew_Supplier_data",
       requestOptions
     ).then((response) => {
-        console.log(response)
+        console.log(response);
         formik.resetForm();
         setFilename("");
         setOpenAlert(!openAlert);
@@ -109,7 +106,7 @@ const RegistrationForm = () => {
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
         open={openAlert}
-        autoHideDuration={6000}
+        autoHideDuration={3000}
         onClose={() => setOpenAlert(!openAlert)}
       >
         <Alert
@@ -492,9 +489,9 @@ const RegistrationForm = () => {
                   name="file"
                   hidden
                   type="file"
-                  onChange={(event) => {
-                    formik.setFieldValue("file", event.currentTarget.files[0]);
-                    setFilename(event.currentTarget.files[0].name);
+                  onChange={(event) => { 
+                    setSelectedFile(event.target.files[0]);
+                    setFilename(event.currentTarget.files[0].name); 
                   }}
                 />
               </Button>

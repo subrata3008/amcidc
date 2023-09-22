@@ -67,7 +67,83 @@ export const partofVolutarySchemeList = [{
 },{
     value:'other',
     label:'Other, please elaborate'
-}]
+}];
+
+
+export const unitList = [{
+    value:'air',
+    label:'in metric tons in air'
+},{
+    value:'vaccum',
+    label:'in metric tons in vaccum'
+}];
+
+export const tabList = [{
+    value:'0',
+    label:'Seller & Cargo Details '
+},{
+    value:'1',
+    label:'Traceability details'
+},{
+    value:'2',
+    label:'GHG details'
+}];
+
+export const complienceList = [{
+    value:'EU',
+    label:'EU RED compliant '
+},{
+    value:'EPA',
+    label:'EPA RFS compliant'
+}];
+
+export const feedBackStockList = [{
+    value:'palm',
+    label:'Crude palm oil'
+},{
+    value:'palmWithMethane',
+    label:'Crude palm oil with methane capture'
+},{
+    value:'palmWithMethaneAvoidance',
+    label:'Crude palm oil with methane avoidance'
+},{
+    value:'refinedPalm',
+    label:'Refined Bleached Deodorized Palm Oil'
+},{
+    value:'refinedPalmWithMethane',
+    label:'Refined Bleached Deodorized Palm Oil with methane capture'
+},{
+    value:'refinedPalmOlein',
+    label:'Refined Bleached Deodorized Palm Olein'
+},{
+    value:'refinedPalmStearine',
+    label:'Refined Bleached Deodorized Palm Stearine'
+},{
+    value:'palmFattyAcid',
+    label:'Palm Fatty Acid Distillate'
+}];
+
+export const counterParties = [
+    {
+        value:'finOy',
+        label:'Neste Renewable Fuels Oy / PL 95 00095 NESTE FINLAND'
+    },{
+        value:'singPte',
+        label:'Neste Singapore PTE Ltd / 250 North Bridge Road 17-01 Raffles City Tower Singapore 179101 SINGAPORE'
+    },{
+        value:'finOyj',
+        label:'Neste Oyj / PL 95  00095 NESTE  FINLAND'
+    },{
+        value:'swedAb',
+        label:'Neste Ab / Strandvägen 7 A 114 56 Stockholm SWEDE'
+    },{
+        value:'suissSA',
+        label:'Neste (Suisse) S.A./ 16, Chemin des  Coquelicots 1214 Vernier SWITZERLAND'
+    },{
+        value:'usInc',
+        label:'Neste US, Inc./ 3040 Post Oak Blvd,  Suite 1700 Houston, TX 77056 UNITED STATES'
+    }
+]
 
 // From https://bitbucket.org/atlassian/atlaskit-mk-2/raw/4ad0e56649c3e6c973e226b7efaeb28cb240ccb0/packages/core/select/src/data/countries.js
 export const countryList = [ 
