@@ -78,6 +78,17 @@ export const unitList = [{
     label:'in metric tons in vaccum'
 }];
 
+export const tabList = [{
+    value:'0',
+    label:'Seller & Cargo Details '
+},{
+    value:'1',
+    label:'Traceability details'
+},{
+    value:'2',
+    label:'GHG details'
+}];
+
 export const complienceList = [{
     value:'EU',
     label:'EU RED compliant '
