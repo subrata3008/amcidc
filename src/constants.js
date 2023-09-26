@@ -95,6 +95,12 @@ export const compliantList = [{
     label:'No'
 }];
 
+
+export const batchType = {
+    SELLER:'seller',
+    ESTATEMILL:'estateMill'
+};
+
 export const complienceList = [{
     value:'EU',
     label:'EU RED compliant '

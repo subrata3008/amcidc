@@ -27,6 +27,7 @@ import {
   feedBackStockList,
   tabList,
   compliantList,
+  batchType
 } from "../../constants";
 import MuiAlert from "@mui/material/Alert";
 import { TabContext, TabPanel } from "@mui/lab";
@@ -43,7 +44,7 @@ const DeliveryForm = () => {
     { quantity: "", origin: "" },
   ]);
   const [millBatchDetails, setMillBatchDetails] = useState([
-    { millName: "", certNum: "", estateName: "", certNumCover: "", isEpa: "", isEU: "", wareHouseName: "", wareHouseLoc: "", loadedQuantity: "", batchNo: "", totalGhgEMission:'' },
+    { millName: "", certNum: "", estateName: "", certNumCover: "", isEpa: "", isEU: "", wareHouseName: "", certNumWareHouse: "", wareHouseLoc: "", loadedQuantity: "", batchNo: "", totalGhgEMission:'' },
   ]);
   const [tabIndex, setTabindex] = useState("0");
   const [success, setSuccess] = useState("success");
@@ -83,16 +84,20 @@ const DeliveryForm = () => {
     },
   });
 
-  const updateFieldVal = (eve,dataList,index,keyName) =>{ 
+  const updateFieldVal = (eve,dataList,index,keyName,type) =>{ 
     debugger;
       const updatedBatch = {...batchDetails[index], [keyName]: eve.target.value};
       const newBatches = [
         ...batchDetails.slice(0, index),
         updatedBatch,
         ...batchDetails.slice(index + 1)
-      ];
-      console.log(newBatches);
-      setBatchDetails(newBatches); 
+      ]; 
+      if(type === batchType.SELLER){
+        setBatchDetails(newBatches); 
+      }
+      if(type === batchType.ESTATEMILL){
+        setBatchDetails(newBatches); 
+      }
   }
 
 
@@ -619,7 +624,7 @@ const DeliveryForm = () => {
                           variant="standard"
                           label="Loaded quantity(mt)"
                           value={batchDetails[index].quantity}
-                          onChange={(event)=> updateFieldVal(event,batchDetails,index,'quantity')}
+                          onChange={(event)=> updateFieldVal(event,batchDetails,index,'quantity',batchType.SELLER)}
                           autoComplete="off"
                         />
                         <TextField 
@@ -629,7 +634,7 @@ const DeliveryForm = () => {
                           variant="standard"
                           label="Origin"
                           value={batchDetails[index].origin}
-                          onChange={(event)=> updateFieldVal(event,batchDetails,index,'origin')}
+                          onChange={(event)=> updateFieldVal(event,batchDetails,index,'origin',batchType.SELLER)}
                           autoComplete="off"
                         />
 
@@ -679,53 +684,53 @@ const DeliveryForm = () => {
               <h3>Traceability & GHG information details</h3>
               <div className="form-wrapper">
                 <h4>D1. Estate and Mill Data</h4>
-                {millBatchDetails.map((batch, index) => {
+                {millBatchDetails.map((millbatch, index) => {
                   return (
                     <>
                     <Card className="eachTranciability-wrapper">
                       <FormControl className="customInput-wrapper"> 
                         <TextField 
-                          key={index+batch.millName}
+                          key={index+millbatch.millName}
                           fullWidth
-                          id={batch.millName}
+                          id={millbatch.millName}
                           name="millName"
                           variant="standard"
                           label="Mill name"
-                          value={batch.millName}
-                          onChange={formik.handleChange}
+                          value={millbatch.millName}
+                          onChange={(event)=> updateFieldVal(event,millBatchDetails,index,'millName',batchType.ESTATEMILL)} 
                           autoComplete="off"
                         />
                         <TextField
-                          key={index+batch.certNum}
+                          key={index+millbatch.certNum}
                           fullWidth
-                          id={batch.certNum}
-                          name={batch.certNum}
+                          id={millbatch.certNum}
+                          name={millbatch.certNum}
                           variant="standard"
                           label="Certificate number of the mill"
-                          value={batch.certNum}
-                          onChange={formik.handleChange}
+                          value={millbatch.certNum}
+                          onChange={(event)=> updateFieldVal(event,millBatchDetails,index,'certNum',batchType.ESTATEMILL)} 
                           autoComplete="off"
                         />
                         <TextField 
-                          key={index+batch.estateName}
+                          key={index+millbatch.estateName}
                           fullWidth
-                          id={batch.estateName}
+                          id={millbatch.estateName}
                           name="estateName"
                           variant="standard"
                           label="Name of estate (s) or smallholders"
-                          value={batch.estateName}
-                          onChange={formik.handleChange}
+                          value={millbatch.estateName}
+                          onChange={(event)=> updateFieldVal(event,millBatchDetails,index,'estateName',batchType.ESTATEMILL)} 
                           autoComplete="off"
                         />
                         <TextField
-                          key={index+batch.certNumCover}
+                          key={index+millbatch.certNumCover}
                           fullWidth
-                          id={batch.certNumCover}
-                          name={batch.certNumCover}
+                          id={millbatch.certNumCover}
+                          name={millbatch.certNumCover}
                           variant="standard"
                           label="Certificate number covering the smallholders (if applicable)"
                           value={formik.values.batchDetails.certNumCover}
-                          onChange={formik.handleChange}
+                          onChange={(event)=> updateFieldVal(event,millBatchDetails,index,'certNumCover',batchType.ESTATEMILL)} 
                           autoComplete="off"
                         />
                         </FormControl>
@@ -739,12 +744,10 @@ const DeliveryForm = () => {
                           className="optionEpa"
                           labelId="country"
                           variant="standard"
-                          id={batch.isEU}
-                          name={batch.isEU}
-                          value={batch.isEU}
-                          onChange={(event) => {
-                            formik.setFieldValue("country", event.target.value);
-                          }}
+                          id={millbatch.isEpa}
+                          name={millbatch.isEpa}
+                          value={millbatch.isEpa}
+                          onChange={(event)=> updateFieldVal(event,millBatchDetails,index,'isEpa',batchType.ESTATEMILL)}  
                         >
                           {compliantList.map((option,indx) => (
                             <MenuItem key={option.value+indx} value={option.value}>
@@ -761,12 +764,10 @@ const DeliveryForm = () => {
                           className="optionEpa"
                           labelId="country"
                           variant="standard"
-                          id="country"
-                          name="country"
-                          value={formik.values.country}
-                          onChange={(event) => {
-                            formik.setFieldValue("country", event.target.value);
-                          }}
+                          id={millbatch.isEU}
+                          name={millbatch.isEU}
+                          value={millbatch.isEU} 
+                          onChange={(event)=> updateFieldVal(event,millBatchDetails,index,'isEU',batchType.ESTATEMILL)}  
                         >
                           {compliantList.map((option,indx) => (
                             <MenuItem key={option.value+indx} value={option.value}>
@@ -780,36 +781,36 @@ const DeliveryForm = () => {
                       <FormControl className="customInput-wrapper">
                         
                       <TextField
-                          key={index+batch.origin}
+                          key={index+millbatch.origin}
                           fullWidth
-                          id={formik.batchDetails}
-                          name={batch.batchDetails}
+                          id={formik.millbatchDetails}
+                          name={millbatch.wareHouseName}
                           variant="standard"
                           label="Name of the warehouse / port prior to shipment"
                           value={formik.values.batchDetails.origin}
-                          onChange={formik.handleChange}
+                          onChange={(event)=> updateFieldVal(event,millBatchDetails,index,'wareHouseName',batchType.ESTATEMILL)} 
                           autoComplete="off"
                         />
                         <TextField
                           key={formik.certNum+index}
                           fullWidth
-                          id={formik.certNum}
-                          name={formik.certNum}
+                          id={formik.certNumWareHouse}
+                          name={formik.certNumWareHouse}
                           variant="standard"
                           label="Certificate number of the warehouse / port"
                           value={formik.values.batchDetails.origin}
-                          onChange={formik.handleChange}
+                          onChange={(event)=> updateFieldVal(event,millBatchDetails,index,'certNumWareHouse',batchType.ESTATEMILL)}  
                           autoComplete="off"
                         /> 
                         <TextField
-                          key={batch.origin+index}
+                          key={millbatch.origin+index}
                           fullWidth
-                          id={batch.origin}
-                          name={batch.origin}
+                          id={millbatch.origin}
+                          name={millbatch.origin}
                           variant="standard"
                           label="Location of the warehouse (city, country)"
                           value={formik.values.batchDetails.origin}
-                          onChange={formik.handleChange}
+                          onChange={(event)=> updateFieldVal(event,millBatchDetails,index,'wareHouseLoc',batchType.ESTATEMILL)}  
                           autoComplete="off"
                         />
                     </FormControl>
@@ -818,34 +819,34 @@ const DeliveryForm = () => {
                     <TextField
                           key={index}
                           fullWidth
-                          id={batch.origin}
-                          name={batch.origin}
+                          id={millbatch.origin}
+                          name={millbatch.origin}
                           variant="standard"
                           label="Loaded quantity (mt)"
                           value={formik.values.batchDetails.origin}
-                          onChange={formik.handleChange}
+                          onChange={(event)=> updateFieldVal(event,millBatchDetails,index,'loadedQuantity',batchType.ESTATEMILL)}  
                           autoComplete="off"
                         />
                          <TextField
                         key={index}
                         fullWidth
-                        id={batch.origin}
-                        name={batch.origin}
+                        id={millbatch.origin}
+                        name={millbatch.origin}
                         variant="standard"
                         label="Batch no (from section C, tab 1)"
                         value={formik.values.batchDetails.origin}
-                        onChange={formik.handleChange}
+                        onChange={(event)=> updateFieldVal(event,millBatchDetails,index,'batchNo',batchType.ESTATEMILL)} 
                         autoComplete="off"
                       />
                        <TextField
                           key={index}
                           fullWidth
-                          id={batch.origin}
-                          name={batch.origin}
+                          id={millbatch.origin}
+                          name={millbatch.origin}
                           variant="standard"
                           label="Total GHG Emission from the supply and use of the fuel"
                           value={formik.values.batchDetails.origin}
-                          onChange={formik.handleChange}
+                          onChange={(event)=> updateFieldVal(event,millBatchDetails,index,'totalGhgEMission',batchType.ESTATEMILL)} 
                           autoComplete="off"
                         />
                         <p
