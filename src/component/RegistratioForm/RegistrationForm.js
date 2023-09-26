@@ -31,9 +31,7 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 });
 
 const RegistrationForm = () => {
-  const [openAlert, setOpenAlert] = useState(false);
-  const [fileName, setFilename] = useState(""); 
-  const [selectedFile, setSelectedFile] = useState();
+  const [openAlert, setOpenAlert] = useState(false); 
   const [success, setSuccess] = useState('success');
   const [msg, setMsg] = useState('');
   
@@ -58,15 +56,13 @@ const RegistrationForm = () => {
       rawCoo: "",
       rawCooDest: "",
       partofVolutaryScheme: [],
-      validCert: "",
-      file: "",
+      validCert: "", 
       feeback: "",
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
       // console.log(values);
-      // console.log(selectedFile); 
-      values.file = selectedFile;
+      // console.log(selectedFile);  
       console.log(values);
       //alert("Data successfully submitted, please check you e-mail for confirmation");
       submitRegistrationForm(values);
@@ -95,16 +91,14 @@ const RegistrationForm = () => {
       }})
     .then((res) => {
       console.log(res);
-      formik.resetForm();
-      setFilename("");
+      formik.resetForm(); 
       setOpenAlert(!openAlert);
       setSuccess('success');
       setMsg('Data successfully submitted, please check you e-mail for confirmation');
     })
     .catch((err) => {
       setOpenAlert(!openAlert);
-      formik.resetForm();
-      setFilename("");
+      formik.resetForm(); 
       setSuccess('error');
       setMsg('Some error occured');
       console.error("There was an error!", err);
@@ -491,23 +485,7 @@ return (
                 autoComplete="off"
               />
             </FormControl>
-
-            <FormControl className="button-wrapper">
-              <Button variant="contained" component="label">
-                Upload
-                <input
-                  id="file"
-                  name="file"
-                  hidden
-                  type="file"
-                  onChange={(event) => { 
-                    setSelectedFile(event.target.files[0]);
-                    setFilename(event.currentTarget.files[0].name); 
-                  }}
-                />
-              </Button>
-              {fileName}
-            </FormControl>
+ 
 
             <FormControl className="textarea-wrapper">
               <FormLabel component="legend">

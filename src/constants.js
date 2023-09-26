@@ -83,10 +83,16 @@ export const tabList = [{
     label:'Seller & Cargo Details '
 },{
     value:'1',
-    label:'Traceability details'
+    label:'Traceability & GHG details'
+}];
+
+
+export const compliantList = [{
+    value:'Y',
+    label:'Yes'
 },{
-    value:'2',
-    label:'GHG details'
+    value:'N',
+    label:'No'
 }];
 
 export const complienceList = [{
