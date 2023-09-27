@@ -148,8 +148,8 @@ const DeliveryForm = () => {
    * @param {*} type
    */
   const updateFieldVal = (eve, dataList, index, keyName, type) => {
-    debugger;
-    const updatedList = { ...dataList[index], [keyName]: eve.target.value };
+    //debugger;
+    conSt updatedList = { ...dataList[index], [keyName]: eve.target.value };
     const newList = [
       ...dataList.slice(0, index),
       updatedList,
@@ -1459,7 +1459,7 @@ const DeliveryForm = () => {
                     width="10px"
                     onClick={formik.handleSubmit}
                   >
-                    Submit complete Form
+                    Submit
                   </Button>
                 </FormControl>
               </div>
