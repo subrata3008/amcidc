@@ -149,7 +149,7 @@ const DeliveryForm = () => {
    */
   const updateFieldVal = (eve, dataList, index, keyName, type) => {
     //debugger;
-    conSt updatedList = { ...dataList[index], [keyName]: eve.target.value };
+    const updatedList = { ...dataList[index], [keyName]: eve.target.value };
     const newList = [
       ...dataList.slice(0, index),
       updatedList,
