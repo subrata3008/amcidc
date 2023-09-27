@@ -23,6 +23,7 @@ import {
   suppliedRawMaterialList,
   countryList,
   partofVolutarySchemeList,
+  baseApiUrl
 } from "../../constants"; 
 import MuiAlert from "@mui/material/Alert";
 
@@ -85,7 +86,7 @@ const RegistrationForm = () => {
     // console.log(formData); 
     
     axios
-    .post('https://ztb2dcu4lf.execute-api.us-east-1.amazonaws.com/createNew_Supplier_data', formValues, {
+    .post(baseApiUrl +'/createNew_Supplier_data', formValues, {
       headers: {
         "Content-Type": "multipart/form-data", 
       }})

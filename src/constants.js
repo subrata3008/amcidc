@@ -97,8 +97,10 @@ export const compliantList = [{
 
 
 export const batchType = {
-    SELLER:'seller',
-    ESTATEMILL:'estateMill'
+    SELLER:'SELLER',
+    ESTATEMILL:'ESTATEMILL',
+    REFINERYWAREHOUSEDATA:'REFINERYWAREHOUSEDATA',
+    SHIPPEDPRODUCEDVOL:'SHIPPEDPRODUCEDVOL'
 };
 
 export const complienceList = [{
@@ -408,3 +410,6 @@ export const countryList = [
 {value: 'ZM', label: 'Zambia'}, 
 {value: 'ZW', label: 'Zimbabwe'}
 ];
+
+
+export const baseApiUrl = "https://yd31ps78m8.execute-api.us-east-1.amazonaws.com";
