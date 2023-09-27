@@ -185,10 +185,10 @@ const DeliveryForm = () => {
       setOpenAlert(!openAlert);
       setSuccess('success');
       setMsg('Data successfully submitted!');
-      setBatchDetails(initialBatchDetails);
-      setMillBatchDetails(initialMillBatchDetails);
-      setRefineryDetails(initialRefineryDetails);
-      setShippedVolumeDetails(initialShippedVolumeDetails);
+      // setBatchDetails(initialBatchDetails);
+      // setMillBatchDetails(initialMillBatchDetails);
+      // setRefineryDetails(initialRefineryDetails);
+      // setShippedVolumeDetails(initialShippedVolumeDetails);
     })
     .catch((err) => {
       setOpenAlert(!openAlert);
@@ -196,10 +196,10 @@ const DeliveryForm = () => {
       setSuccess('error');
       setMsg('Some error occured');
       console.error("There was an error!", err);
-      setBatchDetails(initialBatchDetails);
-      setMillBatchDetails(initialMillBatchDetails);
-      setRefineryDetails(initialRefineryDetails);
-      setShippedVolumeDetails(initialShippedVolumeDetails);
+      // setBatchDetails(initialBatchDetails);
+      // setMillBatchDetails(initialMillBatchDetails);
+      // setRefineryDetails(initialRefineryDetails);
+      // setShippedVolumeDetails(initialShippedVolumeDetails);
     }
     ); 
   };
