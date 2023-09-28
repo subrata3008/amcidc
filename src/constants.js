@@ -83,11 +83,25 @@ export const tabList = [{
     label:'Seller & Cargo Details '
 },{
     value:'1',
-    label:'Traceability details'
-},{
-    value:'2',
-    label:'GHG details'
+    label:'Traceability & GHG details'
 }];
+
+
+export const compliantList = [{
+    value:'Y',
+    label:'Yes'
+},{
+    value:'N',
+    label:'No'
+}];
+
+
+export const batchType = {
+    SELLER:'SELLER',
+    ESTATEMILL:'ESTATEMILL',
+    REFINERYWAREHOUSEDATA:'REFINERYWAREHOUSEDATA',
+    SHIPPEDPRODUCEDVOL:'SHIPPEDPRODUCEDVOL'
+};
 
 export const complienceList = [{
     value:'EU',
@@ -396,3 +410,7 @@ export const countryList = [
 {value: 'ZM', label: 'Zambia'}, 
 {value: 'ZW', label: 'Zimbabwe'}
 ];
+
+
+export const baseApiUrl2 = "https://ztb2dcu4lf.execute-api.us-east-1.amazonaws.com";
+export const baseApiUrl = "https://yd31ps78m8.execute-api.us-east-1.amazonaws.com";

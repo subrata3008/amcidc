@@ -23,6 +23,7 @@ import {
   suppliedRawMaterialList,
   countryList,
   partofVolutarySchemeList,
+  baseApiUrl2
 } from "../../constants"; 
 import MuiAlert from "@mui/material/Alert";
 
@@ -31,9 +32,7 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 });
 
 const RegistrationForm = () => {
-  const [openAlert, setOpenAlert] = useState(false);
-  const [fileName, setFilename] = useState(""); 
-  const [selectedFile, setSelectedFile] = useState();
+  const [openAlert, setOpenAlert] = useState(false); 
   const [success, setSuccess] = useState('success');
   const [msg, setMsg] = useState('');
   
@@ -58,15 +57,13 @@ const RegistrationForm = () => {
       rawCoo: "",
       rawCooDest: "",
       partofVolutaryScheme: [],
-      validCert: "",
-      file: "",
+      validCert: "", 
       feeback: "",
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
       // console.log(values);
-      // console.log(selectedFile); 
-      values.file = selectedFile;
+      // console.log(selectedFile);  
       console.log(values);
       //alert("Data successfully submitted, please check you e-mail for confirmation");
       submitRegistrationForm(values);
@@ -78,39 +75,49 @@ const RegistrationForm = () => {
    * @param {*} formValues
    */
   const submitRegistrationForm = (formValues) => {
-    console.log(Object.keys(formValues))
-    //const formData = new FormData();
-    //console.log(Object.keys.apply(formValues));
-    // Object.keys(formValues).map((eachData) => { 
-    //   debugger;
-    //   console.log(formValues[eachData]);
-    //   formData.append(eachData.toString(),formValues.eachData);
-    // }) 
-    // console.log(formData); 
-    
-    axios
-    .post('https://ztb2dcu4lf.execute-api.us-east-1.amazonaws.com/createNew_Supplier_data', formValues, {
-      headers: {
-        "Content-Type": "multipart/form-data", 
-      }})
-    .then((res) => {
-      console.log(res);
-      formik.resetForm();
-      setFilename("");
-      setOpenAlert(!openAlert);
-      setSuccess('success');
-      setMsg('Data successfully submitted, please check you e-mail for confirmation');
-    })
-    .catch((err) => {
-      setOpenAlert(!openAlert);
-      formik.resetForm();
-      setFilename("");
-      setSuccess('error');
-      setMsg('Some error occured');
-      console.error("There was an error!", err);
-    }
-    );
-}; 
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      mode: "no-cors",
+      body: JSON.stringify(JSON.stringify(formValues, null, 2)),
+    };
+    fetch(baseApiUrl2+"/createNew_Supplier_data", requestOptions)
+      .then(async (response) => { 
+        formik.resetForm(); 
+        setOpenAlert(!openAlert);
+        setSuccess('success');
+        setMsg('Data successfully submitted, please check you e-mail for confirmation');
+      })
+      .catch((error) => {
+        setOpenAlert(!openAlert);
+        formik.resetForm(); 
+        setSuccess('error');
+        setMsg('Some error occured'); 
+      });
+  };
+//   const submitRegistrationForm = (formValues) => {
+//     console.log(Object.keys(formValues)) 
+//     axios
+//     .post(baseApiUrl2 +'/createNew_Supplier_data', formValues, {
+//       headers: {
+//         "Content-Type": "multipart/form-data", 
+//       }})
+//     .then((res) => {
+//       console.log(res);
+//       formik.resetForm(); 
+//       setOpenAlert(!openAlert);
+//       setSuccess('success');
+//       setMsg('Data successfully submitted, please check you e-mail for confirmation');
+//     })
+//     .catch((err) => {
+//       setOpenAlert(!openAlert);
+//       formik.resetForm(); 
+//       setSuccess('error');
+//       setMsg('Some error occured');
+//       console.error("There was an error!", err);
+//     }
+//     );
+// }; 
 
 return (
     <>
@@ -491,23 +498,7 @@ return (
                 autoComplete="off"
               />
             </FormControl>
-
-            <FormControl className="button-wrapper">
-              <Button variant="contained" component="label">
-                Upload
-                <input
-                  id="file"
-                  name="file"
-                  hidden
-                  type="file"
-                  onChange={(event) => { 
-                    setSelectedFile(event.target.files[0]);
-                    setFilename(event.currentTarget.files[0].name); 
-                  }}
-                />
-              </Button>
-              {fileName}
-            </FormControl>
+ 
 
             <FormControl className="textarea-wrapper">
               <FormLabel component="legend">
