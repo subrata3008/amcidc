@@ -135,6 +135,7 @@ const DeliveryForm = () => {
       values.millBatchDetails = millBatchDetails;
       values.refineryDetails = refineryDetails;
       values.shippedVolumeDetails = shippedVolumeDetails;
+      console.log(values)
       submitDeliveryForm(values);
     },
   });
@@ -174,34 +175,54 @@ const DeliveryForm = () => {
    * @param {*} formValues
    */
   const submitDeliveryForm = (formValues) => {
-    axios
-    .post(baseApiUrl +'/getSupplier_Criteria_Input', formValues, {
-      headers: {
-        "Content-Type": "multipart/form-data", 
-      }})
-    .then((res) => {
-      console.log(res);
-      formik.resetForm(); 
-      setOpenAlert(!openAlert);
-      setSuccess('success');
-      setMsg('Data successfully submitted!');
-      // setBatchDetails(initialBatchDetails);
-      // setMillBatchDetails(initialMillBatchDetails);
-      // setRefineryDetails(initialRefineryDetails);
-      // setShippedVolumeDetails(initialShippedVolumeDetails);
-    })
-    .catch((err) => {
-      setOpenAlert(!openAlert);
-      formik.resetForm(); 
-      setSuccess('error');
-      setMsg('Some error occured');
-      console.error("There was an error!", err);
-      // setBatchDetails(initialBatchDetails);
-      // setMillBatchDetails(initialMillBatchDetails);
-      // setRefineryDetails(initialRefineryDetails);
-      // setShippedVolumeDetails(initialShippedVolumeDetails);
-    }
-    ); 
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      mode: "no-cors",
+      body: JSON.stringify(JSON.stringify(formValues, null, 2)),
+    };
+    fetch(baseApiUrl+"/getSupplier_Criteria_Input", requestOptions)
+      .then(async (response) => { 
+        formik.resetForm(); 
+        setOpenAlert(!openAlert);
+        setSuccess('success');
+        setMsg('Data successfully submitted!!');
+      })
+      .catch((error) => {
+        setOpenAlert(!openAlert);
+        formik.resetForm(); 
+        setSuccess('error');
+        setMsg('Some error occured'); 
+      });
+
+    // axios
+    // .post(baseApiUrl +'/getSupplier_Criteria_Input', formValues, {
+    //   headers: {
+    //     "Content-Type": "multipart/form-data", 
+    //   }})
+    // .then((res) => {
+    //   console.log(res);
+    //   formik.resetForm(); 
+    //   setOpenAlert(!openAlert);
+    //   setSuccess('success');
+    //   setMsg('Data successfully submitted!');
+    //   // setBatchDetails(initialBatchDetails);
+    //   // setMillBatchDetails(initialMillBatchDetails);
+    //   // setRefineryDetails(initialRefineryDetails);
+    //   // setShippedVolumeDetails(initialShippedVolumeDetails);
+    // })
+    // .catch((err) => {
+    //   setOpenAlert(!openAlert);
+    //   formik.resetForm(); 
+    //   setSuccess('error');
+    //   setMsg('Some error occured');
+    //   console.error("There was an error!", err);
+    //   // setBatchDetails(initialBatchDetails);
+    //   // setMillBatchDetails(initialMillBatchDetails);
+    //   // setRefineryDetails(initialRefineryDetails);
+    //   // setShippedVolumeDetails(initialShippedVolumeDetails);
+    // }
+    // ); 
   };
 
   /**
@@ -1063,7 +1084,7 @@ const DeliveryForm = () => {
                           <p
                             title="Remove"
                             className={
-                              batchDetails.length < 2
+                              millBatchDetails.length < 2
                                 ? "remove notAllowed"
                                 : "remove"
                             }
@@ -1261,7 +1282,7 @@ const DeliveryForm = () => {
                           <p
                             title="Remove"
                             className={
-                              batchDetails.length < 2
+                              refineryDetails.length < 2
                                 ? "remove refineryRemove notAllowed"
                                 : "remove refineryRemove"
                             }
@@ -1416,7 +1437,7 @@ const DeliveryForm = () => {
                           <p
                             title="Remove"
                             className={
-                              batchDetails.length < 2
+                              shippedVolumeDetails.length < 2
                                 ? "remove refineryRemove notAllowed"
                                 : "remove refineryRemove"
                             }

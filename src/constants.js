@@ -412,4 +412,5 @@ export const countryList = [
 ];
 
 
+export const baseApiUrl2 = "https://ztb2dcu4lf.execute-api.us-east-1.amazonaws.com";
 export const baseApiUrl = "https://yd31ps78m8.execute-api.us-east-1.amazonaws.com";

@@ -23,7 +23,7 @@ import {
   suppliedRawMaterialList,
   countryList,
   partofVolutarySchemeList,
-  baseApiUrl
+  baseApiUrl2
 } from "../../constants"; 
 import MuiAlert from "@mui/material/Alert";
 
@@ -75,37 +75,49 @@ const RegistrationForm = () => {
    * @param {*} formValues
    */
   const submitRegistrationForm = (formValues) => {
-    console.log(Object.keys(formValues))
-    //const formData = new FormData();
-    //console.log(Object.keys.apply(formValues));
-    // Object.keys(formValues).map((eachData) => { 
-    //   debugger;
-    //   console.log(formValues[eachData]);
-    //   formData.append(eachData.toString(),formValues.eachData);
-    // }) 
-    // console.log(formData); 
-    
-    axios
-    .post(baseApiUrl +'/createNew_Supplier_data', formValues, {
-      headers: {
-        "Content-Type": "multipart/form-data", 
-      }})
-    .then((res) => {
-      console.log(res);
-      formik.resetForm(); 
-      setOpenAlert(!openAlert);
-      setSuccess('success');
-      setMsg('Data successfully submitted, please check you e-mail for confirmation');
-    })
-    .catch((err) => {
-      setOpenAlert(!openAlert);
-      formik.resetForm(); 
-      setSuccess('error');
-      setMsg('Some error occured');
-      console.error("There was an error!", err);
-    }
-    );
-}; 
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      mode: "no-cors",
+      body: JSON.stringify(JSON.stringify(formValues, null, 2)),
+    };
+    fetch(baseApiUrl2+"/createNew_Supplier_data", requestOptions)
+      .then(async (response) => { 
+        formik.resetForm(); 
+        setOpenAlert(!openAlert);
+        setSuccess('success');
+        setMsg('Data successfully submitted, please check you e-mail for confirmation');
+      })
+      .catch((error) => {
+        setOpenAlert(!openAlert);
+        formik.resetForm(); 
+        setSuccess('error');
+        setMsg('Some error occured'); 
+      });
+  };
+//   const submitRegistrationForm = (formValues) => {
+//     console.log(Object.keys(formValues)) 
+//     axios
+//     .post(baseApiUrl2 +'/createNew_Supplier_data', formValues, {
+//       headers: {
+//         "Content-Type": "multipart/form-data", 
+//       }})
+//     .then((res) => {
+//       console.log(res);
+//       formik.resetForm(); 
+//       setOpenAlert(!openAlert);
+//       setSuccess('success');
+//       setMsg('Data successfully submitted, please check you e-mail for confirmation');
+//     })
+//     .catch((err) => {
+//       setOpenAlert(!openAlert);
+//       formik.resetForm(); 
+//       setSuccess('error');
+//       setMsg('Some error occured');
+//       console.error("There was an error!", err);
+//     }
+//     );
+// }; 
 
 return (
     <>
