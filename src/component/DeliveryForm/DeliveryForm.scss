@@ -1,0 +1,172 @@
+
+.tab-wrapper{
+    text-align: left;
+    padding-left: 5vw;
+    .activeTab{
+        border-bottom: 2px solid #68BC29;
+        color: #68BC29;
+    }
+}
+.deliveryForm-wrapper,.traceability-ghgform-wrapper{
+    color: black;
+    margin: 0 2% 2% 2% ;
+    border: 1px solid #bebebe;
+    border-radius: 3px;
+    background: white;
+    h3{
+    text-align: left;
+    font-weight: 100;
+    padding-left: 4vw;
+} h5,h4{
+    text-align: left;
+    font-weight: 100; 
+    margin-bottom: 12px;
+    padding-top: 5px;
+}
+    .form-wrapper{
+    padding: 0 4vw;
+    
+    .input-wrapper{
+        width: 100%;
+        text-align: left;
+        label{
+            color: #707070;
+        }
+        .formLabel{
+            color: #707070;
+        }
+        .MuiInput-underline:hover:not(.Mui-disabled):before {
+            border-bottom: 1px solid green;
+        } 
+        .myclass{
+            border-color: red !important;
+        }
+    } 
+    .upload-button-wrapper{
+        float: left;
+        width: 100vw;
+        margin: 2% 0vh;
+        display: flex;
+        flex-direction: row;
+        label{
+            background: gray;
+            width: 10vw;
+        }
+        legend{
+            color: gray;
+            width: 14%;
+            padding-top: 1vh;
+            text-align: left;
+        }
+    }
+    .twoInput-wrapper{
+        float: left;
+        width: 100%;
+        display: flex;
+        flex-direction: row; 
+        label{
+            color: #707070;
+        }
+        
+    }
+    .add{
+        padding: 6px;
+        cursor: pointer;
+        color: white;
+        border-radius: 50%;
+        background: #68bc29;
+        width: 20px;
+        text-align: center;
+    }
+    .remove{
+        padding: 6px;
+        cursor: pointer;
+        color: white;
+        border-radius: 50%;
+        background: red;
+        width: 40px;
+        text-align: center;
+    }
+    .refineryRemove{
+        width: 20px;
+    }
+    .notAllowed{
+        cursor: not-allowed;
+        background: #de9191;
+    }
+    .button-wrapper{
+        text-align: left;
+        width: 100%;
+        margin: 3% 0vh;
+        display: block;
+        label{
+            background: gray;
+        }
+    }
+    .customInput-wrapper{ 
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        text-align: left;
+        margin-bottom: 1vw; 
+        .batchFormlabel{
+            width: 20vw;
+            vertical-align: bottom;
+            line-height: 10px;
+            margin-top: 27px; 
+        } 
+        .greenBorder{
+            border-bottom: 1px sollid green;
+        }
+        label{
+            color: #707070;
+        }
+        div{
+            width: 85%;
+        }
+        .monthVol{
+            width: 50%;
+            div{
+                display: flex;
+                flex-direction: row;
+                width: 100%;
+            }
+        }
+        .optionLabel{
+            width: 32vw;
+        }
+        .optionEpa{
+            margin-right: 4%;
+        }
+        .periodLabel{
+            width: 60vw;
+        }
+    }
+    .eachTranciability-wrapper{
+        margin-bottom: 5vh;
+        padding: 1vw;
+    }
+    .date-wrapper{  
+        padding-top: 3vh;
+    }
+    .textarea-wrapper {
+        width: 100%;
+        padding-top: 2vh;
+        text-align: left;
+    }
+    .button-class{ 
+        float: left;
+        margin: 2%;    
+        border-radius: 0.625rem 0 0.625rem 0.625rem;
+        padding: 0.5375rem 1.5rem 0.5375rem;
+        border-radius: 0.625rem 0 0.625rem 0.625rem;
+        color: #ffffff;
+        border-color: #68bc29;
+        background-color: #68bc29;
+        box-shadow: 0 2px 1.25rem -6px #68bc29;
+        width: 12%;
+        margin-left: 0;
+        font-size: 16px;
+    }
+}
+}
