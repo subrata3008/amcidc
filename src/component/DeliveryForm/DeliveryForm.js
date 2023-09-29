@@ -181,7 +181,7 @@ const DeliveryForm = () => {
       mode: "no-cors",
       body: JSON.stringify(JSON.stringify(formValues, null, 2)),
     };
-    fetch(baseApiUrl+"/getSupplier_Criteria_Input", requestOptions)
+    fetch(baseApiUrl+"/createSupplier_Criteria_Input", requestOptions)
       .then(async (response) => { 
         formik.resetForm(); 
         setOpenAlert(!openAlert);
