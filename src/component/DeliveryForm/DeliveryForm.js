@@ -29,7 +29,7 @@ import {
   tabList,
   compliantList,
   batchType,
-  baseApiUrl
+  baseApiUrl,
 } from "../../constants";
 import MuiAlert from "@mui/material/Alert";
 import { TabContext, TabPanel } from "@mui/lab";
@@ -101,7 +101,6 @@ const DeliveryForm = () => {
       contectPersonTel: "",
       buyerRef: "",
       sellerRef: "",
-      country: "",
       certSysName: "",
       certNumberOfSeller: "",
       nameOfCertBody: "",
@@ -112,7 +111,7 @@ const DeliveryForm = () => {
       loadingPort: "",
       dischargePort: "",
       avgMonthVolume: "",
-      recipientAdd: [],
+      recipientAdd: "",
       loadedQuantity: "",
       feedBackStockType: [],
       file: "",
@@ -130,12 +129,18 @@ const DeliveryForm = () => {
       // console.log(refineryDetails);
       // console.log(millBatchDetails);
       // console.log(shippedVolumeDetails);
-      values.file = selectedFile;
+      //const newSelectedFile = [...selectedFile];
+      const files = selectedFile ? [...selectedFile] : [];
+      // const data = new FormData();
+      // files.forEach((file, i) => {
+      //   data.append(`file-${i}`, file, file.name);
+      // });
+      values.file = files;
       values.batchDetails = batchDetails;
       values.millBatchDetails = millBatchDetails;
       values.refineryDetails = refineryDetails;
       values.shippedVolumeDetails = shippedVolumeDetails;
-      console.log(values)
+      console.log(values);
       submitDeliveryForm(values);
     },
   });
@@ -175,34 +180,39 @@ const DeliveryForm = () => {
    * @param {*} formValues
    */
   const submitDeliveryForm = (formValues) => {
+    const files = selectedFile ? [...selectedFile] : [];
+    const data = new FormData();
+    files.forEach((file, i) => {
+      data.append(`file-${i}`, file, file.name);
+    });
     const requestOptions = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       mode: "no-cors",
-      body: JSON.stringify(JSON.stringify(formValues, null, 2)),
+      body: data,
     };
-    fetch(baseApiUrl+"/createSupplier_Criteria_Input", requestOptions)
-      .then(async (response) => { 
-        formik.resetForm(); 
+    fetch(baseApiUrl + "/createSupplier_Criteria_Input", requestOptions)
+      .then(async (response) => {
+        formik.resetForm();
         setOpenAlert(!openAlert);
-        setSuccess('success');
-        setMsg('Data successfully submitted!!');
+        setSuccess("success");
+        setMsg("Data successfully submitted!!");
       })
       .catch((error) => {
         setOpenAlert(!openAlert);
-        formik.resetForm(); 
-        setSuccess('error');
-        setMsg('Some error occured'); 
+        formik.resetForm();
+        setSuccess("error");
+        setMsg("Some error occured");
       });
 
     // axios
     // .post(baseApiUrl +'/getSupplier_Criteria_Input', formValues, {
     //   headers: {
-    //     "Content-Type": "multipart/form-data", 
+    //     "Content-Type": "multipart/form-data",
     //   }})
     // .then((res) => {
     //   console.log(res);
-    //   formik.resetForm(); 
+    //   formik.resetForm();
     //   setOpenAlert(!openAlert);
     //   setSuccess('success');
     //   setMsg('Data successfully submitted!');
@@ -213,7 +223,7 @@ const DeliveryForm = () => {
     // })
     // .catch((err) => {
     //   setOpenAlert(!openAlert);
-    //   formik.resetForm(); 
+    //   formik.resetForm();
     //   setSuccess('error');
     //   setMsg('Some error occured');
     //   console.error("There was an error!", err);
@@ -222,7 +232,7 @@ const DeliveryForm = () => {
     //   // setRefineryDetails(initialRefineryDetails);
     //   // setShippedVolumeDetails(initialShippedVolumeDetails);
     // }
-    // ); 
+    // );
   };
 
   /**
@@ -269,21 +279,21 @@ const DeliveryForm = () => {
       setBatchDetails((batchs) =>
         batchs.filter((_, index) => index !== delindex)
       );
-      if (type === batchType.ESTATEMILL) {
-        setMillBatchDetails((batchs) =>
-          batchs.filter((_, index) => index !== delindex)
-        );
-      }
-      if (type === batchType.REFINERYWAREHOUSEDATA) {
-        setRefineryDetails((batchs) =>
-          batchs.filter((_, index) => index !== delindex)
-        );
-      }
-      if (type === batchType.SHIPPEDPRODUCEDVOL) {
-        setShippedVolumeDetails((batchs) =>
-          batchs.filter((_, index) => index !== delindex)
-        );
-      }
+    }
+    if (type === batchType.ESTATEMILL) {
+      setMillBatchDetails((batchs) =>
+        batchs.filter((_, index) => index !== delindex)
+      );
+    }
+    if (type === batchType.REFINERYWAREHOUSEDATA) {
+      setRefineryDetails((batchs) =>
+        batchs.filter((_, index) => index !== delindex)
+      );
+    }
+    if (type === batchType.SHIPPEDPRODUCEDVOL) {
+      setShippedVolumeDetails((batchs) =>
+        batchs.filter((_, index) => index !== delindex)
+      );
     }
   };
 
@@ -565,36 +575,22 @@ const DeliveryForm = () => {
                   <FormLabel component="legend" className="formLabel">
                     Name and address of recipient (Neste Counterparty)
                   </FormLabel>
-                  {counterParties.map((recipientAddOption, indx) => (
-                    <FormControlLabel
-                      key={recipientAddOption.value + indx}
-                      name="recipientAdd"
-                      control={
-                        <Checkbox
-                          color="default"
-                          checked={formik.values.recipientAdd.includes(
-                            recipientAddOption.value
-                          )}
-                          value={recipientAddOption.value}
-                          onChange={(ev) => {
-                            if (ev.target.checked) {
-                              formik.values.recipientAdd.push(ev.target.value);
-                            } else {
-                              const index = formik.values.recipientAdd.indexOf(
-                                ev.target.value
-                              );
-                              if (index > -1) {
-                                formik.values.recipientAdd.splice(index, 1);
-                              }
-                            }
-                            formik.validateForm();
-                          }}
-                          name={recipientAddOption.value}
-                        />
-                      }
-                      label={recipientAddOption.label}
-                    />
-                  ))}
+                  <RadioGroup
+                    aria-label="recipientAdd"
+                    name="recipientAdd"
+                    value={formik.values.recipientAdd}
+                  >
+                    {counterParties.map((option, indx) => (
+                      <FormControlLabel
+                        key={option.value + indx}
+                        value={option.value}
+                        onChange={formik.handleChange}
+                        control={<Radio color="default" />}
+                        label={option.label}
+                        defaultChecked={formik.values.recipientAdd === ""}
+                      />
+                    ))}
+                  </RadioGroup>
                 </FormControl>
 
                 <FormControl className="customInput-wrapper">
@@ -912,7 +908,7 @@ const DeliveryForm = () => {
                           </FormLabel>
                           <Select
                             className="optionEpa"
-                            labelId="country"
+                            labelId="isEpa"
                             variant="standard"
                             id={millbatch.isEpa}
                             name={millbatch.isEpa}
@@ -942,7 +938,7 @@ const DeliveryForm = () => {
                           </FormLabel>
                           <Select
                             className="optionEpa"
-                            labelId="country"
+                            labelId="isEU"
                             variant="standard"
                             id={millbatch.isEU}
                             name={millbatch.isEU}
