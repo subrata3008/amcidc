@@ -187,7 +187,7 @@ const DeliveryForm = () => {
     });
     const requestOptions = {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { 'content-type': 'multipart/form-data' },
       mode: "no-cors",
       body: data,
     };
