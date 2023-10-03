@@ -1,1493 +1,1493 @@
-import React, { useState } from "react";
-import { useFormik } from "formik";
-import axios from "axios";
-//import { validationSchema } from "../../utils";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import {
-  TextField,
-  Radio,
-  Checkbox,
-  FormLabel,
-  FormControlLabel,
-  RadioGroup,
-  FormControl,
-  Button,
-  Snackbar,
-  Tab,
-  MenuItem,
-  Select,
-  Card,
-} from "@mui/material";
-import "./DeliveryForm.scss";
-import {
-  counterParties,
-  unitList,
-  complienceList,
-  feedBackStockList,
-  tabList,
-  compliantList,
-  batchType,
-  baseApiUrl,
-} from "../../constants";
-import MuiAlert from "@mui/material/Alert";
-import { TabContext, TabPanel } from "@mui/lab";
+importReactUseStateFromReact
+importUseFormikFromFormik
+importAxiosFromAxios
+importValidationSchemaFromUtils
+importAdapterDayjsFromMuiXDatePickersAdapterDayjs
+importLocalizationProviderFromMuiXDatePickersLocalizationProvider
+importDatePickerFromMuiXDatePickersDatePicker
+import
+textField
+radio
+checkbox
+formLabel
+formControlLabel
+radioGroup
+formControl
+button
+snackbar
+tab
+menuItem
+select
+card
+fromMuiMaterial
+importDeliveryFormScss
+import
+counterParties
+unitList
+complienceList
+feedBackStockList
+tabList
+compliantList
+batchType
+baseApiUrl
+fromConstants
+importMuiAlertFromMuiMaterialAlert
+importTabContextTabPanelFromMuiLab
 
-const Alert = React.forwardRef(function Alert(props, ref) {
-  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-});
+constAlertReactForwardRefFunctionAlertPropsRef
+returnMuiAlertElevation_6RefRefVariantFilledProps
 
-const DeliveryForm = () => {
-  const [openAlert, setOpenAlert] = useState(false);
-  const [fileName, setFilename] = useState("");
-  const [selectedFile, setSelectedFile] = useState();
 
-  const initialBatchDetails = { quantity: "", origin: "" };
-  const [batchDetails, setBatchDetails] = useState([initialBatchDetails]);
+constDeliveryForm
+constOpenAlertSetOpenAlertUseStateFalse
+constFileNameSetFilenameUseState
+constSelectedFileSetSelectedFileUseState
 
-  const initialMillBatchDetails = {
-    millName: "",
-    certNum: "",
-    estateName: "",
-    certNumCover: "",
-    isEpa: "",
-    isEU: "",
-    wareHouseName: "",
-    certNumWareHouse: "",
-    wareHouseLoc: "",
-    loadedQuantity: "",
-    batchNo: "",
-    totalGhgEMission: "",
-  };
-  const [millBatchDetails, setMillBatchDetails] = useState([
-    initialMillBatchDetails,
-  ]);
+constInitialBatchDetailsQuantityOrigin
+constBatchDetailsSetBatchDetailsUseStateInitialBatchDetails
 
-  const initialRefineryDetails = {
-    refinaryName: "",
-    certNumOfRefinery: "",
-    refineryLoc: "",
-    warePriorshipment: "",
-    wareCertNum: "",
-    warehousecity: "",
-    loadedQuant: "",
-    batchNoTwo: "",
-  };
-  const [refineryDetails, setRefineryDetails] = useState([
-    initialRefineryDetails,
-  ]);
+constInitialMillBatchDetails
+millName
+certNum
+estateName
+certNumCover
+isEpa
+isEu
+wareHouseName
+certNumWareHouse
+wareHouseLoc
+loadedQuantity
+batchNo
+totalGhgEMission
 
-  const initialShippedVolumeDetails = {
-    estateNamelast: "",
-    prodFrom: "",
-    prodTo: "",
-    febSupplied: "",
-    cpoProduced: "",
-  };
-  const [shippedVolumeDetails, setShippedVolumeDetails] = useState([
-    initialShippedVolumeDetails,
-  ]);
+constMillBatchDetailsSetMillBatchDetailsUseState
+initialMillBatchDetails
 
-  const [tabIndex, setTabindex] = useState("0");
-  const [success, setSuccess] = useState("success");
-  const [msg, setMsg] = useState("");
 
-  const formik = useFormik({
-    initialValues: {
-      sellerCompanyName: "",
-      sellerCompAddress: "",
-      contactPersonName: "",
-      contectPersonTel: "",
-      buyerRef: "",
-      sellerRef: "",
-      certSysName: "",
-      certNumberOfSeller: "",
-      nameOfCertBody: "",
-      certIssueDate: "",
-      vesselName: "",
-      blDate: "",
-      uniqDelNum: "",
-      loadingPort: "",
-      dischargePort: "",
-      avgMonthVolume: "",
-      recipientAdd: "",
-      loadedQuantity: "",
-      feedBackStockType: [],
-      file: "",
-      compliences: [],
-      batchDetails: "",
-      millBatchDetails: "",
-      refineryDetails: "",
-      shippedVolumeDetails: "",
-    },
-    //validationSchema: validationSchema,
-    onSubmit: (values) => {
-      // debugger;
-      // console.log(selectedFile);
-      // console.log(batchDetails);
-      // console.log(refineryDetails);
-      // console.log(millBatchDetails);
-      // console.log(shippedVolumeDetails);
-      //const newSelectedFile = [...selectedFile];
-      const files = selectedFile ? [...selectedFile] : [];
-      // const data = new FormData();
-      // files.forEach((file, i) => {
-      //   data.append(`file-${i}`, file, file.name);
-      // });
-      values.file = files;
-      values.batchDetails = batchDetails;
-      values.millBatchDetails = millBatchDetails;
-      values.refineryDetails = refineryDetails;
-      values.shippedVolumeDetails = shippedVolumeDetails;
-      console.log(values);
-      submitDeliveryForm(values);
-    },
-  });
+constInitialRefineryDetails
+refinaryName
+certNumOfRefinery
+refineryLoc
+warePriorshipment
+wareCertNum
+warehousecity
+loadedQuant
+batchNoTwo
 
-  /**
-   * Update each filed in loop generic function
-   * @param {*} eve
-   * @param {*} dataList
-   * @param {*} index
-   * @param {*} keyName
-   * @param {*} type
-   */
-  const updateFieldVal = (eve, dataList, index, keyName, type) => {
-    //debugger;
-    const updatedList = { ...dataList[index], [keyName]: eve.target.value };
-    const newList = [
-      ...dataList.slice(0, index),
-      updatedList,
-      ...dataList.slice(index + 1),
-    ];
-    if (type === batchType.SELLER) {
-      setBatchDetails(newList);
-    }
-    if (type === batchType.ESTATEMILL) {
-      setMillBatchDetails(newList);
-    }
-    if (type === batchType.REFINERYWAREHOUSEDATA) {
-      setRefineryDetails(newList);
-    }
-    if (type === batchType.SHIPPEDPRODUCEDVOL) {
-      setShippedVolumeDetails(newList);
-    }
-  };
+constRefineryDetailsSetRefineryDetailsUseState
+initialRefineryDetails
 
-  /**
-   * Form Sunmission method
-   * @param {*} formValues
-   */
-  const submitDeliveryForm = (formValues) => {
-    const files = selectedFile ? [...selectedFile] : [];
-    const data = new FormData();
-    files.forEach((file, i) => {
-      data.append(`file-${i}`, file, file.name);
-    });
-    const requestOptions = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      mode: "no-cors",
-      body: data,
-    };
-    fetch(baseApiUrl + "/createSupplier_Criteria_Input", requestOptions)
-      .then(async (response) => {
-        formik.resetForm();
-        setOpenAlert(!openAlert);
-        setSuccess("success");
-        setMsg("Data successfully submitted!!");
-      })
-      .catch((error) => {
-        setOpenAlert(!openAlert);
-        formik.resetForm();
-        setSuccess("error");
-        setMsg("Some error occured");
-      });
 
-    // axios
-    // .post(baseApiUrl +'/getSupplier_Criteria_Input', formValues, {
-    //   headers: {
-    //     "Content-Type": "multipart/form-data",
-    //   }})
-    // .then((res) => {
-    //   console.log(res);
-    //   formik.resetForm();
-    //   setOpenAlert(!openAlert);
-    //   setSuccess('success');
-    //   setMsg('Data successfully submitted!');
-    //   // setBatchDetails(initialBatchDetails);
-    //   // setMillBatchDetails(initialMillBatchDetails);
-    //   // setRefineryDetails(initialRefineryDetails);
-    //   // setShippedVolumeDetails(initialShippedVolumeDetails);
-    // })
-    // .catch((err) => {
-    //   setOpenAlert(!openAlert);
-    //   formik.resetForm();
-    //   setSuccess('error');
-    //   setMsg('Some error occured');
-    //   console.error("There was an error!", err);
-    //   // setBatchDetails(initialBatchDetails);
-    //   // setMillBatchDetails(initialMillBatchDetails);
-    //   // setRefineryDetails(initialRefineryDetails);
-    //   // setShippedVolumeDetails(initialShippedVolumeDetails);
-    // }
-    // );
-  };
+constInitialShippedVolumeDetails
+estateNamelast
+prodFrom
+prodTo
+febSupplied
+cpoProduced
 
-  /**
-   * Add new Row universal Function
-   * @param {*} batchDetails
-   * @param {*} limit
-   */
-  const addNewRow = (dataList, limit, type) => {
-    if (dataList.length < limit) {
-      if (type === batchType.SELLER) {
-        setBatchDetails((oldArray) => [...oldArray, initialBatchDetails]);
-      }
-      if (type === batchType.ESTATEMILL) {
-        setMillBatchDetails((oldArray) => [
-          ...oldArray,
-          initialMillBatchDetails,
-        ]);
-      }
-      if (type === batchType.REFINERYWAREHOUSEDATA) {
-        setRefineryDetails((oldArray) => [...oldArray, initialRefineryDetails]);
-      }
-      if (type === batchType.SHIPPEDPRODUCEDVOL) {
-        setShippedVolumeDetails((oldArray) => [
-          ...oldArray,
-          initialShippedVolumeDetails,
-        ]);
-      }
-    }
-  };
+constShippedVolumeDetailsSetShippedVolumeDetailsUseState
+initialShippedVolumeDetails
 
-  /**
-   *  Remove fields from a loop
-   *
-   * @param {*} delindex
-   * @param {*} datalist
-   * @param {*} type
-   * @returns
-   */
-  const removeRow = (delindex, datalist, type) => {
-    if (datalist.length < 2) {
-      return;
-    }
-    if (type === batchType.SELLER) {
-      setBatchDetails((batchs) =>
-        batchs.filter((_, index) => index !== delindex)
-      );
-    }
-    if (type === batchType.ESTATEMILL) {
-      setMillBatchDetails((batchs) =>
-        batchs.filter((_, index) => index !== delindex)
-      );
-    }
-    if (type === batchType.REFINERYWAREHOUSEDATA) {
-      setRefineryDetails((batchs) =>
-        batchs.filter((_, index) => index !== delindex)
-      );
-    }
-    if (type === batchType.SHIPPEDPRODUCEDVOL) {
-      setShippedVolumeDetails((batchs) =>
-        batchs.filter((_, index) => index !== delindex)
-      );
-    }
-  };
 
-  return (
-    <>
-      <TabContext value={tabIndex}>
-        <form onSubmit={formik.handleSubmit}>
-          <div className="tab-wrapper">
-            {tabList.map((tabData, index) => {
-              return (
-                <Tab
-                  label={tabData.label}
-                  value={index.toString()}
-                  className={index.toString() === tabIndex ? "activeTab" : ""}
-                  onClick={() => {
-                    setTabindex(index.toString());
-                    console.log(formik.values.batchDetails);
-                    formik.setFieldValue("batchDetails", batchDetails);
-                  }}
-                />
-              );
-            })}
-          </div>
+constTabIndexSetTabindexUseState_0
+constSuccessSetSuccessUseStateSuccess
+constMsgSetMsgUseState
 
-          {/** Seller & Cargo Details Tab Content Start*/}
-          <TabPanel value="0">
-            <Snackbar
-              anchorOrigin={{ vertical: "top", horizontal: "right" }}
-              open={openAlert}
-              autoHideDuration={3000}
-              onClose={() => setOpenAlert(!openAlert)}
-            >
-              <Alert
-                onClose={() => setOpenAlert(false)}
-                severity={success}
-                sx={{ width: "100%" }}
-              >
-                {msg}
-              </Alert>
-            </Snackbar>
-            <div className="deliveryForm-wrapper">
-              <h3>Seller and Cargo details</h3>
-              <div className="form-wrapper">
-                <h4>
-                  A1. Seller Details. Please provide here your own details
-                </h4>
-                <FormControl className="input-wrapper">
-                  <TextField
-                    fullWidth
-                    id="sellerCompanyName"
-                    name="sellerCompanyName"
-                    variant="standard"
-                    key="sellerCompanyName"
-                    label="Seller company name *"
-                    value={formik.values.sellerCompanyName}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    autoComplete="off"
-                    error={
-                      formik.touched.sellerCompanyName &&
-                      Boolean(formik.errors.sellerCompanyName)
-                    }
-                    helperText={
-                      formik.touched.sellerCompanyName &&
-                      formik.errors.sellerCompanyName
-                    }
-                  />
-                </FormControl>
+constFormikUseFormik
+initialValues
+sellerCompanyName
+sellerCompAddress
+contactPersonName
+contectPersonTel
+buyerRef
+sellerRef
+certSysName
+certNumberOfSeller
+nameOfCertBody
+certIssueDate
+vesselName
+blDate
+uniqDelNum
+loadingPort
+dischargePort
+avgMonthVolume
+recipientAdd
+loadedQuantity
+feedBackStockType
+file
+compliences
+batchDetails
+millBatchDetails
+refineryDetails
+shippedVolumeDetails
 
-                <FormControl className="input-wrapper">
-                  <TextField
-                    fullWidth
-                    id="sellerCompAddress"
-                    variant="standard"
-                    name="sellerCompAddress"
-                    label="Seller company address *"
-                    value={formik.values.sellerCompAddress}
-                    onChange={formik.handleChange}
-                    autoComplete="off"
-                    onBlur={formik.handleBlur}
-                    error={
-                      formik.touched.sellerCompAddress &&
-                      Boolean(formik.errors.sellerCompAddress)
-                    }
-                    helperText={
-                      formik.touched.sellerCompAddress &&
-                      formik.errors.sellerCompAddress
-                    }
-                  />
-                </FormControl>
+validationSchemaValidationSchema
+onSubmitValues
+debugger
+consoleLogSelectedFile
+consoleLogBatchDetails
+consoleLogRefineryDetails
+consoleLogMillBatchDetails
+consoleLogShippedVolumeDetails
+constNewSelectedFileSelectedFile
+constFilesSelectedFileSelectedFile
+constDataNewFormData
+filesForEachFileI
+dataAppendFileIFileFileName
 
-                <FormControl className="input-wrapper">
-                  <TextField
-                    fullWidth
-                    id="contactPersonName"
-                    variant="standard"
-                    name="contactPersonName"
-                    label="Contact person name"
-                    value={formik.values.contactPersonName}
-                    onChange={formik.handleChange}
-                    autoComplete="off"
-                  />
-                </FormControl>
+valuesFileFiles
+valuesBatchDetailsBatchDetails
+valuesMillBatchDetailsMillBatchDetails
+valuesRefineryDetailsRefineryDetails
+valuesShippedVolumeDetailsShippedVolumeDetails
+consoleLogValues
+submitDeliveryFormValues
 
-                <FormControl className="input-wrapper">
-                  <TextField
-                    fullWidth
-                    id="contectPersonTel"
-                    variant="standard"
-                    name="contectPersonTel"
-                    label="Contact person telephone"
-                    value={formik.values.contectPersonTel}
-                    onChange={formik.handleChange}
-                    autoComplete="off"
-                  />
-                </FormControl>
 
-                <h4>Contract reference number</h4>
-                <FormControl className="input-wrapper">
-                  <TextField
-                    fullWidth
-                    variant="standard"
-                    id="buyerRef"
-                    name="buyerRef"
-                    label="Buyer reference"
-                    value={formik.values.buyerRef}
-                    onChange={formik.handleChange}
-                    autoComplete="off"
-                  />
-                </FormControl>
 
-                <FormControl className="input-wrapper">
-                  <TextField
-                    fullWidth
-                    id="sellerRef"
-                    variant="standard"
-                    name="sellerRef"
-                    label="Seller reference"
-                    value={formik.values.sellerRef}
-                    onChange={formik.handleChange}
-                    autoComplete="off"
-                  />
-                </FormControl>
 
-                <h4>A2. Seller's Certificate Details.</h4>
+updateEachFiledInLoopGenericFunction
+paramEve
+paramDataList
+paramIndex
+paramKeyName
+paramType
 
-                <FormControl className="input-wrapper">
-                  <TextField
-                    fullWidth
-                    id="certSysName"
-                    variant="standard"
-                    name="certSysName"
-                    label="Name of the certification system"
-                    value={formik.values.certSysName}
-                    onChange={formik.handleChange}
-                    autoComplete="off"
-                  />
-                </FormControl>
+constUpdateFieldValEveDataListIndexKeyNameType
+debugger
+constUpdatedListDataListIndexKeyNameEveTargetValue
+constNewList
+dataListSlice_0Index
+updatedList
+dataListSliceIndex_1
 
-                <FormControl className="input-wrapper">
-                  <TextField
-                    fullWidth
-                    id="certNumberOfSeller"
-                    variant="standard"
-                    name="certNumberOfSeller"
-                    label="Certificate number of the seller"
-                    value={formik.values.certNumberOfSeller}
-                    onChange={formik.handleChange}
-                    autoComplete="off"
-                  />
-                </FormControl>
+ifTypeBatchTypeSeller
+setBatchDetailsNewList
 
-                <FormControl className="input-wrapper">
-                  <TextField
-                    width="50%"
-                    id="nameOfCertBody"
-                    name="nameOfCertBody"
-                    variant="standard"
-                    label="Name of the certification body"
-                    value={formik.values.nameOfCertBody}
-                    onChange={formik.handleChange}
-                    autoComplete="off"
-                  />
-                </FormControl>
+ifTypeBatchTypeEstatemill
+setMillBatchDetailsNewList
 
-                <FormControl className="input-wrapper date-wrapper">
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DatePicker
-                      size="large"
-                      label="B/L date (dd/mm/yyyy)"
-                      format="DD/MM/YYYY"
-                      value={formik.values.certIssueDate}
-                      onChange={(value) =>
-                        formik.setFieldValue("certIssueDate", value, true)
-                      }
-                      slotProps={{
-                        textField: {
-                          variant: "standard",
-                          error: false,
-                        },
-                      }}
-                    />
-                  </LocalizationProvider>
-                </FormControl>
+ifTypeBatchTypeRefinerywarehousedata
+setRefineryDetailsNewList
 
-                <h4>B2. Loaded quantity, unit measure and feedstock type</h4>
+ifTypeBatchTypeShippedproducedvol
+setShippedVolumeDetailsNewList
 
-                <FormControl className="input-wrapper">
-                  <TextField
-                    fullWidth
-                    id="vesselName"
-                    name="vesselName"
-                    variant="standard"
-                    label="Vessel/ Barge name"
-                    value={formik.values.vesselName}
-                    onChange={formik.handleChange}
-                    autoComplete="off"
-                  />
-                </FormControl>
 
-                <FormControl className="input-wrapper date-wrapper">
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DatePicker
-                      size="large"
-                      label="B/L date (dd/mm/yyyy)"
-                      format="DD/MM/YYYY"
-                      value={formik.values.blDate}
-                      onChange={(value) =>
-                        formik.setFieldValue("blDate", value, true)
-                      }
-                      slotProps={{
-                        textField: {
-                          variant: "standard",
-                          error: false,
-                        },
-                      }}
-                    />
-                  </LocalizationProvider>
-                </FormControl>
 
-                <FormControl className="input-wrapper">
-                  <TextField
-                    fullWidth
-                    id="uniqDelNum"
-                    name="uniqDelNum"
-                    variant="standard"
-                    label="A unique delivery number"
-                    value={formik.values.uniqDelNum}
-                    onChange={formik.handleChange}
-                    autoComplete="off"
-                  />
-                </FormControl>
-                <FormControl className="input-wrapper">
-                  <TextField
-                    fullWidth
-                    id="loadingPort"
-                    name="loadingPort"
-                    variant="standard"
-                    label="Loading port"
-                    value={formik.values.loadingPort}
-                    onChange={formik.handleChange}
-                    autoComplete="off"
-                  />
-                </FormControl>
-                <FormControl className="input-wrapper">
-                  <TextField
-                    fullWidth
-                    id="dischargePort"
-                    name="dischargePort"
-                    variant="standard"
-                    label="Discharge port"
-                    value={formik.values.dischargePort}
-                    onChange={formik.handleChange}
-                    autoComplete="off"
-                  />
-                </FormControl>
 
-                <FormControl component="fieldset" className="input-wrapper">
-                  <FormLabel component="legend" className="formLabel">
-                    Name and address of recipient (Neste Counterparty)
-                  </FormLabel>
-                  <RadioGroup
-                    aria-label="recipientAdd"
-                    name="recipientAdd"
-                    value={formik.values.recipientAdd}
-                  >
-                    {counterParties.map((option, indx) => (
-                      <FormControlLabel
-                        key={option.value + indx}
-                        value={option.value}
-                        onChange={formik.handleChange}
-                        control={<Radio color="default" />}
-                        label={option.label}
-                        defaultChecked={formik.values.recipientAdd === ""}
-                      />
-                    ))}
-                  </RadioGroup>
-                </FormControl>
+formSunmissionMethod
+paramFormValues
 
-                <FormControl className="customInput-wrapper">
-                  <TextField
-                    fullWidth
-                    id="loadedQuantity"
-                    name="loadedQuantity"
-                    variant="standard"
-                    label="Loaded quantity"
-                    value={formik.values.loadedQuantity}
-                    onChange={formik.handleChange}
-                    autoComplete="off"
-                  />
-                  <div className="monthVol">
-                    <RadioGroup
-                      aria-label="avgMonthVolume"
-                      name="avgMonthVolume"
-                      value={formik.values.avgMonthVolume}
-                    >
-                      {unitList.map((option, indx) => (
-                        <FormControlLabel
-                          key={option.value + indx}
-                          value={option.value}
-                          onChange={formik.handleChange}
-                          control={<Radio color="default" />}
-                          label={option.label}
-                          defaultChecked={formik.values.gender === ""}
-                        />
-                      ))}
-                    </RadioGroup>
-                  </div>
-                </FormControl>
+constSubmitDeliveryFormFormValues
+constFilesSelectedFileSelectedFile
+constDataNewFormData
+filesForEachFileI
+dataAppendFileIFileFileName
 
-                <FormControl component="fieldset" className="input-wrapper">
-                  <FormLabel component="legend" className="formLabel">
-                    Feedstock type
-                  </FormLabel>
-                  {feedBackStockList.map((feedBackStockTypeOption, indx) => (
-                    <FormControlLabel
-                      key={feedBackStockTypeOption.value + indx}
-                      name="feedBackStockType"
-                      control={
-                        <Checkbox
-                          color="default"
-                          checked={formik.values.feedBackStockType.includes(
-                            feedBackStockTypeOption.value
-                          )}
-                          value={feedBackStockTypeOption.value}
-                          onChange={(ev) => {
-                            if (ev.target.checked) {
-                              formik.values.feedBackStockType.push(
-                                ev.target.value
-                              );
-                            } else {
-                              const index =
-                                formik.values.feedBackStockType.indexOf(
-                                  ev.target.value
-                                );
-                              if (index > -1) {
-                                formik.values.feedBackStockType.splice(
-                                  index,
-                                  1
-                                );
-                              }
-                            }
-                            formik.validateForm();
-                          }}
-                          name={feedBackStockTypeOption.value}
-                        />
-                      }
-                      label={feedBackStockTypeOption.label}
-                    />
-                  ))}
-                </FormControl>
+constRequestOptions
+methodPost
+headersContentTypeApplicationJson
+modeNoCors
+bodyData
 
-                <FormControl className="upload-button-wrapper">
-                  <FormLabel component="legend" className="formLabel">
-                    Upload Cerirficate :
-                  </FormLabel>
-                  <Button variant="contained" component="label">
-                    Upload
-                    <input
-                      id="file"
-                      name="file"
-                      multiple={true}
-                      hidden
-                      type="file"
-                      onChange={(event) => {
-                        setSelectedFile(event.target.files);
-                        setFilename(
-                          event.target.files.length > 1
-                            ? event.target.files.length + " Files selected"
-                            : event.currentTarget.files[0].name
-                        );
-                      }}
-                    />
-                  </Button>
-                  {fileName}
-                </FormControl>
-                <br></br>
-                <h4>B3. Market Compliance information.</h4>
-                <FormControl component="fieldset" className="input-wrapper">
-                  <FormLabel component="legend" className="formLabel">
-                    Compliance type
-                  </FormLabel>
-                  {complienceList.map((complienceOption) => (
-                    <FormControlLabel
-                      key={complienceOption.value}
-                      name="compliences"
-                      control={
-                        <Checkbox
-                          color="default"
-                          checked={formik.values.compliences.includes(
-                            complienceOption.value
-                          )}
-                          value={complienceOption.value}
-                          onChange={(ev) => {
-                            if (ev.target.checked) {
-                              formik.values.compliences.push(ev.target.value);
-                            } else {
-                              const index = formik.values.compliences.indexOf(
-                                ev.target.value
-                              );
-                              if (index > -1) {
-                                formik.values.compliences.splice(index, 1);
-                              }
-                            }
-                            formik.validateForm();
-                          }}
-                          name={complienceOption.value}
-                        />
-                      }
-                      label={complienceOption.label}
-                    />
-                  ))}
-                </FormControl>
+fetchBaseApiUrlCreateSupplierCriteriaInputRequestOptions
+thenAsyncResponse
+formikResetForm
+setOpenAlertOpenAlert
+setSuccessSuccess
+setMsgDataSuccessfullySubmitted
 
-                {batchDetails.map((batch, index) => {
-                  return (
-                    <>
-                      <div className="customInput-wrapper">
-                        <FormLabel component="label" className="batchFormlabel">
-                          {`Batch ${index + 1}:`}
-                        </FormLabel>
-                        <TextField
-                          fullWidth
-                          id={batch.quantity}
-                          name="batch"
-                          variant="standard"
-                          label="Loaded quantity(mt)"
-                          value={batchDetails[index].quantity}
-                          onChange={(event) =>
-                            updateFieldVal(
-                              event,
-                              batchDetails,
-                              index,
-                              "quantity",
-                              batchType.SELLER
-                            )
-                          }
-                          autoComplete="off"
-                        />
-                        <TextField
-                          fullWidth
-                          id={batch.origin}
-                          name={batch.origin}
-                          variant="standard"
-                          label="Origin"
-                          value={batchDetails[index].origin}
-                          onChange={(event) =>
-                            updateFieldVal(
-                              event,
-                              batchDetails,
-                              index,
-                              "origin",
-                              batchType.SELLER
-                            )
-                          }
-                          autoComplete="off"
-                        />
+catchError
+setOpenAlertOpenAlert
+formikResetForm
+setSuccessError
+setMsgSomeErrorOccured
 
-                        <p
-                          title="Remove"
-                          className={
-                            batchDetails.length < 2
-                              ? "remove notAllowed"
-                              : "remove"
-                          }
-                          onClick={() =>
-                            removeRow(index, batchDetails, batchType.SELLER)
-                          }
-                        >
-                          -
-                        </p>
-                      </div>
-                    </>
-                  );
-                })}
-                <p
-                  className="add"
-                  title="Add new Batch"
-                  onClick={() => addNewRow(batchDetails, 7, batchType.SELLER)}
-                >
-                  +
-                </p>
-              </div>
-            </div>
-          </TabPanel>
 
-          {/** Seller & Cargo Details Tab Content End*/}
+axios
+postBaseApiUrlGetSupplierCriteriaInputFormValues
+headers
+contentTypeMultipartFormData
 
-          {/** Traceability & GHG details Tab Content Start*/}
+thenRes
+consoleLogRes
+formikResetForm
+setOpenAlertOpenAlert
+setSuccessSuccess
+setMsgDataSuccessfullySubmitted
+setBatchDetailsInitialBatchDetails
+setMillBatchDetailsInitialMillBatchDetails
+setRefineryDetailsInitialRefineryDetails
+setShippedVolumeDetailsInitialShippedVolumeDetails
 
-          <TabPanel value="1">
-            <Snackbar
-              anchorOrigin={{ vertical: "top", horizontal: "right" }}
-              open={openAlert}
-              autoHideDuration={3000}
-              onClose={() => setOpenAlert(!openAlert)}
-            >
-              <Alert
-                onClose={() => setOpenAlert(false)}
-                severity={success}
-                sx={{ width: "100%" }}
-              >
-                {msg}
-              </Alert>
-            </Snackbar>
-            <div className="traceability-ghgform-wrapper">
-              <h3>Traceability & GHG information details</h3>
-              <div className="form-wrapper">
-                <h4>D1. Estate and Mill Data</h4>
-                {millBatchDetails.map((millbatch, index) => {
-                  return (
-                    <>
-                      <Card className="eachTranciability-wrapper">
-                        <div className="customInput-wrapper">
-                          <TextField
-                            fullWidth
-                            id={millbatch.millName}
-                            name="millName"
-                            variant="standard"
-                            label="Mill name"
-                            value={millbatch.millName}
-                            onChange={(event) =>
-                              updateFieldVal(
-                                event,
-                                millBatchDetails,
-                                index,
-                                "millName",
-                                batchType.ESTATEMILL
-                              )
-                            }
-                            autoComplete="off"
-                          />
-                          <TextField
-                            fullWidth
-                            id={millbatch.certNum}
-                            name={millbatch.certNum}
-                            variant="standard"
-                            label="Certificate number of the mill"
-                            value={millbatch.certNum}
-                            onChange={(event) =>
-                              updateFieldVal(
-                                event,
-                                millBatchDetails,
-                                index,
-                                "certNum",
-                                batchType.ESTATEMILL
-                              )
-                            }
-                            autoComplete="off"
-                          />
-                          <TextField
-                            fullWidth
-                            id={millbatch.estateName}
-                            name="estateName"
-                            variant="standard"
-                            label="Name of estate (s) or smallholders"
-                            value={millbatch.estateName}
-                            onChange={(event) =>
-                              updateFieldVal(
-                                event,
-                                millBatchDetails,
-                                index,
-                                "estateName",
-                                batchType.ESTATEMILL
-                              )
-                            }
-                            autoComplete="off"
-                          />
-                          <TextField
-                            fullWidth
-                            id={millbatch.certNumCover}
-                            name={millbatch.certNumCover}
-                            variant="standard"
-                            label="Certificate number covering the smallholders (if applicable)"
-                            value={formik.values.batchDetails.certNumCover}
-                            onChange={(event) =>
-                              updateFieldVal(
-                                event,
-                                millBatchDetails,
-                                index,
-                                "certNumCover",
-                                batchType.ESTATEMILL
-                              )
-                            }
-                            autoComplete="off"
-                          />
-                        </div>
+catchErr
+setOpenAlertOpenAlert
+formikResetForm
+setSuccessError
+setMsgSomeErrorOccured
+consoleErrorThereWasAnErrorErr
+setBatchDetailsInitialBatchDetails
+setMillBatchDetailsInitialMillBatchDetails
+setRefineryDetailsInitialRefineryDetails
+setShippedVolumeDetailsInitialShippedVolumeDetails
 
-                        <div className="customInput-wrapper">
-                          <FormLabel component="label" className="optionLabel">
-                            Dec 19th 2007, if EPA compliant
-                          </FormLabel>
-                          <Select
-                            className="optionEpa"
-                            labelId="isEpa"
-                            variant="standard"
-                            id={millbatch.isEpa}
-                            name={millbatch.isEpa}
-                            value={millbatch.isEpa}
-                            onChange={(event) =>
-                              updateFieldVal(
-                                event,
-                                millBatchDetails,
-                                index,
-                                "isEpa",
-                                batchType.ESTATEMILL
-                              )
-                            }
-                          >
-                            {compliantList.map((option, indx) => (
-                              <MenuItem
-                                key={option.value + indx}
-                                value={option.value}
-                              >
-                                {option.label}
-                              </MenuItem>
-                            ))}
-                          </Select>
 
-                          <FormLabel component="label" className="optionLabel">
-                            Jan 1th 2008, if EU RED compliant
-                          </FormLabel>
-                          <Select
-                            className="optionEpa"
-                            labelId="isEU"
-                            variant="standard"
-                            id={millbatch.isEU}
-                            name={millbatch.isEU}
-                            value={millbatch.isEU}
-                            onChange={(event) =>
-                              updateFieldVal(
-                                event,
-                                millBatchDetails,
-                                index,
-                                "isEU",
-                                batchType.ESTATEMILL
-                              )
-                            }
-                          >
-                            {compliantList.map((option, indx) => (
-                              <MenuItem
-                                key={option.value + indx}
-                                value={option.value}
-                              >
-                                {option.label}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </div>
 
-                        <div className="customInput-wrapper">
-                          <TextField
-                            key={index + millbatch.origin}
-                            fullWidth
-                            id={formik.millbatchDetails}
-                            name={millbatch.wareHouseName}
-                            variant="standard"
-                            label="Name of the warehouse / port prior to shipment"
-                            value={formik.values.batchDetails.origin}
-                            onChange={(event) =>
-                              updateFieldVal(
-                                event,
-                                millBatchDetails,
-                                index,
-                                "wareHouseName",
-                                batchType.ESTATEMILL
-                              )
-                            }
-                            autoComplete="off"
-                          />
-                          <TextField
-                            fullWidth
-                            id={formik.certNumWareHouse}
-                            name={formik.certNumWareHouse}
-                            variant="standard"
-                            label="Certificate number of the warehouse / port"
-                            value={formik.values.batchDetails.origin}
-                            onChange={(event) =>
-                              updateFieldVal(
-                                event,
-                                millBatchDetails,
-                                index,
-                                "certNumWareHouse",
-                                batchType.ESTATEMILL
-                              )
-                            }
-                            autoComplete="off"
-                          />
-                          <TextField
-                            fullWidth
-                            id={millbatch.origin}
-                            name={millbatch.origin}
-                            variant="standard"
-                            label="Location of the warehouse (city, country)"
-                            value={formik.values.batchDetails.origin}
-                            onChange={(event) =>
-                              updateFieldVal(
-                                event,
-                                millBatchDetails,
-                                index,
-                                "wareHouseLoc",
-                                batchType.ESTATEMILL
-                              )
-                            }
-                            autoComplete="off"
-                          />
-                        </div>
 
-                        <div className="customInput-wrapper">
-                          <TextField
-                            fullWidth
-                            id={millbatch.origin}
-                            name={millbatch.origin}
-                            variant="standard"
-                            label="Loaded quantity (mt)"
-                            value={formik.values.batchDetails.origin}
-                            onChange={(event) =>
-                              updateFieldVal(
-                                event,
-                                millBatchDetails,
-                                index,
-                                "loadedQuantity",
-                                batchType.ESTATEMILL
-                              )
-                            }
-                            autoComplete="off"
-                          />
-                          <TextField
-                            fullWidth
-                            id={millbatch.origin}
-                            name={millbatch.origin}
-                            variant="standard"
-                            label="Batch no (from section C, tab 1)"
-                            value={formik.values.batchDetails.origin}
-                            onChange={(event) =>
-                              updateFieldVal(
-                                event,
-                                millBatchDetails,
-                                index,
-                                "batchNo",
-                                batchType.ESTATEMILL
-                              )
-                            }
-                            autoComplete="off"
-                          />
-                          <TextField
-                            fullWidth
-                            id={millbatch.origin}
-                            name={millbatch.origin}
-                            variant="standard"
-                            label="Total GHG Emission from the supply and use of the fuel"
-                            value={formik.values.batchDetails.origin}
-                            onChange={(event) =>
-                              updateFieldVal(
-                                event,
-                                millBatchDetails,
-                                index,
-                                "totalGhgEMission",
-                                batchType.ESTATEMILL
-                              )
-                            }
-                            autoComplete="off"
-                          />
-                          <p
-                            title="Remove"
-                            className={
-                              millBatchDetails.length < 2
-                                ? "remove notAllowed"
-                                : "remove"
-                            }
-                            onClick={() =>
-                              removeRow(
-                                index,
-                                millBatchDetails,
-                                batchType.ESTATEMILL
-                              )
-                            }
-                          >
-                            -
-                          </p>
-                        </div>
-                      </Card>
-                    </>
-                  );
-                })}
-                <p
-                  className="add"
-                  title="Add new Batch"
-                  onClick={() =>
-                    addNewRow(
-                      millBatchDetails,
-                      batchDetails.length,
-                      batchType.ESTATEMILL
-                    )
-                  }
-                >
-                  +
-                </p>
-              </div>
 
-              <div className="form-wrapper">
-                <h4>D2. Refinery and Warehouse Data</h4>
-                {refineryDetails.map((refinerybatch, index) => {
-                  return (
-                    <>
-                      <Card className="eachTranciability-wrapper">
-                        <div className="customInput-wrapper">
-                          <TextField
-                            fullWidth
-                            id={refinerybatch.refinaryName}
-                            name="refinaryName"
-                            variant="standard"
-                            label="Name of the refinery"
-                            value={refinerybatch.refinaryName}
-                            onChange={(event) =>
-                              updateFieldVal(
-                                event,
-                                refineryDetails,
-                                index,
-                                "refinaryName",
-                                batchType.REFINERYWAREHOUSEDATA
-                              )
-                            }
-                            autoComplete="off"
-                          />
-                          <TextField
-                            fullWidth
-                            id={refinerybatch.certNumOfRefinery}
-                            name={refinerybatch.certNumOfRefinery}
-                            variant="standard"
-                            label="Certificate number of the refinery"
-                            value={refinerybatch.certNumOfRefinery}
-                            onChange={(event) =>
-                              updateFieldVal(
-                                event,
-                                refineryDetails,
-                                index,
-                                "certNumOfRefinery",
-                                batchType.REFINERYWAREHOUSEDATA
-                              )
-                            }
-                            autoComplete="off"
-                          />
-                          <TextField
-                            fullWidth
-                            id={refinerybatch.refineryLoc}
-                            name="refineryLoc"
-                            variant="standard"
-                            label="Location of the refinery
-                            (city, country)"
-                            value={refinerybatch.refineryLoc}
-                            onChange={(event) =>
-                              updateFieldVal(
-                                event,
-                                refineryDetails,
-                                index,
-                                "refineryLoc",
-                                batchType.REFINERYWAREHOUSEDATA
-                              )
-                            }
-                            autoComplete="off"
-                          />
-                          <TextField
-                            fullWidth
-                            id={refinerybatch.warePriorshipment}
-                            name={refinerybatch.warePriorshipment}
-                            variant="standard"
-                            label="Name of the warehouse / port prior to shipment"
-                            value={refinerybatch.warePriorshipment}
-                            onChange={(event) =>
-                              updateFieldVal(
-                                event,
-                                refineryDetails,
-                                index,
-                                "warePriorshipment",
-                                batchType.REFINERYWAREHOUSEDATA
-                              )
-                            }
-                            autoComplete="off"
-                          />
-                        </div>
+addNewRowUniversalFunction
+paramBatchDetails
+paramLimit
 
-                        <div className="customInput-wrapper">
-                          <TextField
-                            fullWidth
-                            id={refinerybatch.wareCertNum}
-                            name={refinerybatch.wareCertNum}
-                            variant="standard"
-                            label="Certificate number of the warehouse / port"
-                            value={refinerybatch.origin}
-                            onChange={(event) =>
-                              updateFieldVal(
-                                event,
-                                refineryDetails,
-                                index,
-                                "wareCertNum",
-                                batchType.REFINERYWAREHOUSEDATA
-                              )
-                            }
-                            autoComplete="off"
-                          />
-                          <TextField
-                            fullWidth
-                            id={refinerybatch.warehousecity}
-                            name={refinerybatch.warehousecity}
-                            variant="standard"
-                            label="Location of the warehouse
-                            (city, country)"
-                            value={refinerybatch.warehousecity}
-                            onChange={(event) =>
-                              updateFieldVal(
-                                event,
-                                refineryDetails,
-                                index,
-                                "warehousecity",
-                                batchType.REFINERYWAREHOUSEDATA
-                              )
-                            }
-                            autoComplete="off"
-                          />
-                          <TextField
-                            fullWidth
-                            id={refinerybatch.loadedQuant}
-                            name={refinerybatch.loadedQuant}
-                            variant="standard"
-                            label="Loaded 
-                            quantity (mt)"
-                            value={refinerybatch.loadedQuant}
-                            onChange={(event) =>
-                              updateFieldVal(
-                                event,
-                                refineryDetails,
-                                index,
-                                "loadedQuant",
-                                batchType.REFINERYWAREHOUSEDATA
-                              )
-                            }
-                            autoComplete="off"
-                          />
-                        </div>
+constAddNewRowDataListLimitType
+ifDataListLengthLimit
+ifTypeBatchTypeSeller
+setBatchDetailsOldArrayOldArrayInitialBatchDetails
 
-                        <div className="customInput-wrapper">
-                          <TextField
-                            fullWidth
-                            id={refinerybatch.batchNoTwo}
-                            name={refinerybatch.batchNoTwo}
-                            variant="standard"
-                            label="Batch no
-                            (from section C, tab 1)"
-                            value={refinerybatch.batchNoTwo}
-                            onChange={(event) =>
-                              updateFieldVal(
-                                event,
-                                refineryDetails,
-                                index,
-                                "batchNoTwo",
-                                batchType.REFINERYWAREHOUSEDATA
-                              )
-                            }
-                            autoComplete="off"
-                          />
-                          <p
-                            title="Remove"
-                            className={
-                              refineryDetails.length < 2
-                                ? "remove refineryRemove notAllowed"
-                                : "remove refineryRemove"
-                            }
-                            onClick={() =>
-                              removeRow(
-                                index,
-                                refineryDetails,
-                                batchType.REFINERYWAREHOUSEDATA
-                              )
-                            }
-                          >
-                            -
-                          </p>
-                        </div>
-                      </Card>
-                    </>
-                  );
-                })}
-                <p
-                  className="add"
-                  title="Add new Batch"
-                  onClick={() =>
-                    addNewRow(
-                      refineryDetails,
-                      batchDetails.length,
-                      batchType.REFINERYWAREHOUSEDATA
-                    )
-                  }
-                >
-                  +
-                </p>
-              </div>
+ifTypeBatchTypeEstatemill
+setMillBatchDetailsOldArray
+oldArray
+initialMillBatchDetails
 
-              <div className="form-wrapper">
-                <h4>D2. Volumes produced, as shipped. </h4>
-                {shippedVolumeDetails.map((shippedbatch, index) => {
-                  return (
-                    <>
-                      <Card className="eachTranciability-wrapper">
-                        <div className="customInput-wrapper">
-                          <TextField
-                            fullWidth
-                            id={shippedbatch.estateNamelast}
-                            name="estateNamelast"
-                            variant="standard"
-                            label="Estate Names"
-                            value={shippedbatch.estateNamelast}
-                            onChange={(event) =>
-                              updateFieldVal(
-                                event,
-                                shippedVolumeDetails,
-                                index,
-                                "estateNamelast",
-                                batchType.SHIPPEDPRODUCEDVOL
-                              )
-                            }
-                            autoComplete="off"
-                          />
 
-                          <FormLabel
-                            component="legend"
-                            className="formLabel periodLabel"
-                          >
-                            Period of Production (DD/MM/YY)
-                          </FormLabel>
-                          <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <DatePicker
-                              size="large"
-                              label="From"
-                              format="DD/MM/YYYY"
-                              value={shippedbatch.prodFrom}
-                              onChange={(event) =>
-                                updateFieldVal(
-                                  event,
-                                  shippedVolumeDetails,
-                                  index,
-                                  "prodFrom",
-                                  batchType.SHIPPEDPRODUCEDVOL
-                                )
-                              }
-                              slotProps={{
-                                textField: {
-                                  variant: "standard",
-                                  error: false,
-                                },
-                              }}
-                            />
-                          </LocalizationProvider>
+ifTypeBatchTypeRefinerywarehousedata
+setRefineryDetailsOldArrayOldArrayInitialRefineryDetails
 
-                          <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <DatePicker
-                              size="large"
-                              label="To"
-                              format="DD/MM/YYYY"
-                              value={shippedbatch.prodTo}
-                              onChange={(event) =>
-                                updateFieldVal(
-                                  event,
-                                  shippedVolumeDetails,
-                                  index,
-                                  "prodTo",
-                                  batchType.SHIPPEDPRODUCEDVOL
-                                )
-                              }
-                              slotProps={{
-                                textField: {
-                                  variant: "standard",
-                                  error: false,
-                                },
-                              }}
-                            />
-                          </LocalizationProvider>
-                        </div>
+ifTypeBatchTypeShippedproducedvol
+setShippedVolumeDetailsOldArray
+oldArray
+initialShippedVolumeDetails
 
-                        <div className="customInput-wrapper">
-                          <TextField
-                            fullWidth
-                            id={shippedbatch.febSupplied}
-                            name={shippedbatch.febSupplied}
-                            variant="standard"
-                            label="FFB supplied (mt)"
-                            value={shippedbatch.febSupplied}
-                            onChange={(event) =>
-                              updateFieldVal(
-                                event,
-                                shippedVolumeDetails,
-                                index,
-                                "febSupplied",
-                                batchType.SHIPPEDPRODUCEDVOL
-                              )
-                            }
-                            autoComplete="off"
-                          />
-                          <TextField
-                            fullWidth
-                            id={shippedbatch.cpoProduced}
-                            name="cpoProduced"
-                            variant="standard"
-                            label="CPO produced (mt)"
-                            value={shippedbatch.cpoProduced}
-                            onChange={(event) =>
-                              updateFieldVal(
-                                event,
-                                shippedVolumeDetails,
-                                index,
-                                "cpoProduced",
-                                batchType.SHIPPEDPRODUCEDVOL
-                              )
-                            }
-                            autoComplete="off"
-                          />
-                          <p
-                            title="Remove"
-                            className={
-                              shippedVolumeDetails.length < 2
-                                ? "remove refineryRemove notAllowed"
-                                : "remove refineryRemove"
-                            }
-                            onClick={() =>
-                              removeRow(
-                                index,
-                                shippedVolumeDetails,
-                                batchType.SHIPPEDPRODUCEDVOL
-                              )
-                            }
-                          >
-                            -
-                          </p>
-                        </div>
-                      </Card>
-                    </>
-                  );
-                })}
-                <p
-                  className="add"
-                  title="Add new Batch"
-                  onClick={() =>
-                    addNewRow(
-                      shippedVolumeDetails,
-                      10,
-                      batchType.SHIPPEDPRODUCEDVOL
-                    )
-                  }
-                >
-                  +
-                </p>
 
-                <FormControl className="input-wrapper">
-                  <Button
-                    className="button-class"
-                    color="primary"
-                    variant="contained"
-                    fullWidth
-                    type="submit"
-                    width="10px"
-                    onClick={formik.handleSubmit}
-                  >
-                    Submit
-                  </Button>
-                </FormControl>
-              </div>
-            </div>
-          </TabPanel>
 
-          {/** Traceability & GHG details Tab Content END */}
-        </form>
-      </TabContext>
-    </>
-  );
-};
 
-export default DeliveryForm;
+
+
+removeFieldsFromALoop
+
+paramDelindex
+paramDatalist
+paramType
+returns
+
+constRemoveRowDelindexDatalistType
+ifDatalistLength_2
+return
+
+ifTypeBatchTypeSeller
+setBatchDetailsBatchs
+batchsFilterIndexIndexDelindex
+
+
+ifTypeBatchTypeEstatemill
+setMillBatchDetailsBatchs
+batchsFilterIndexIndexDelindex
+
+
+ifTypeBatchTypeRefinerywarehousedata
+setRefineryDetailsBatchs
+batchsFilterIndexIndexDelindex
+
+
+ifTypeBatchTypeShippedproducedvol
+setShippedVolumeDetailsBatchs
+batchsFilterIndexIndexDelindex
+
+
+
+
+return
+
+tabContextValueTabIndex
+formOnSubmitFormikHandleSubmit
+divClassNameTabWrapper
+tabListMapTabDataIndex
+return
+tab
+labelTabDataLabel
+valueIndexToString
+classNameIndexToStringTabIndexActiveTab
+onClick
+setTabindexIndexToString
+consoleLogFormikValuesBatchDetails
+formikSetFieldValueBatchDetailsBatchDetails
+
+
+
+
+div
+
+sellerCargoDetailsTabContentStart
+tabPanelValue_0
+snackbar
+anchorOriginVerticalTopHorizontalRight
+openOpenAlert
+autoHideDuration_3000
+onCloseSetOpenAlertOpenAlert
+
+alert
+onCloseSetOpenAlertFalse
+severitySuccess
+sxWidth_100
+
+msg
+alert
+snackbar
+divClassNameDeliveryFormWrapper
+h3SellerAndCargoDetailsH3
+divClassNameFormWrapper
+h4
+a1SellerDetailsPleaseProvideHereYourOwnDetails
+h4
+formControlClassNameInputWrapper
+textField
+fullWidth
+idSellerCompanyName
+nameSellerCompanyName
+variantStandard
+keySellerCompanyName
+labelSellerCompanyName
+valueFormikValuesSellerCompanyName
+onChangeFormikHandleChange
+onBlurFormikHandleBlur
+autoCompleteOff
+error
+formikTouchedSellerCompanyName
+booleanFormikErrorsSellerCompanyName
+
+helperText
+formikTouchedSellerCompanyName
+formikErrorsSellerCompanyName
+
+
+formControl
+
+formControlClassNameInputWrapper
+textField
+fullWidth
+idSellerCompAddress
+variantStandard
+nameSellerCompAddress
+labelSellerCompanyAddress
+valueFormikValuesSellerCompAddress
+onChangeFormikHandleChange
+autoCompleteOff
+onBlurFormikHandleBlur
+error
+formikTouchedSellerCompAddress
+booleanFormikErrorsSellerCompAddress
+
+helperText
+formikTouchedSellerCompAddress
+formikErrorsSellerCompAddress
+
+
+formControl
+
+formControlClassNameInputWrapper
+textField
+fullWidth
+idContactPersonName
+variantStandard
+nameContactPersonName
+labelContactPersonName
+valueFormikValuesContactPersonName
+onChangeFormikHandleChange
+autoCompleteOff
+
+formControl
+
+formControlClassNameInputWrapper
+textField
+fullWidth
+idContectPersonTel
+variantStandard
+nameContectPersonTel
+labelContactPersonTelephone
+valueFormikValuesContectPersonTel
+onChangeFormikHandleChange
+autoCompleteOff
+
+formControl
+
+h4ContractReferenceNumberH4
+formControlClassNameInputWrapper
+textField
+fullWidth
+variantStandard
+idBuyerRef
+nameBuyerRef
+labelBuyerReference
+valueFormikValuesBuyerRef
+onChangeFormikHandleChange
+autoCompleteOff
+
+formControl
+
+formControlClassNameInputWrapper
+textField
+fullWidth
+idSellerRef
+variantStandard
+nameSellerRef
+labelSellerReference
+valueFormikValuesSellerRef
+onChangeFormikHandleChange
+autoCompleteOff
+
+formControl
+
+h4A2SellerSCertificateDetailsH4
+
+formControlClassNameInputWrapper
+textField
+fullWidth
+idCertSysName
+variantStandard
+nameCertSysName
+labelNameOfTheCertificationSystem
+valueFormikValuesCertSysName
+onChangeFormikHandleChange
+autoCompleteOff
+
+formControl
+
+formControlClassNameInputWrapper
+textField
+fullWidth
+idCertNumberOfSeller
+variantStandard
+nameCertNumberOfSeller
+labelCertificateNumberOfTheSeller
+valueFormikValuesCertNumberOfSeller
+onChangeFormikHandleChange
+autoCompleteOff
+
+formControl
+
+formControlClassNameInputWrapper
+textField
+width_50
+idNameOfCertBody
+nameNameOfCertBody
+variantStandard
+labelNameOfTheCertificationBody
+valueFormikValuesNameOfCertBody
+onChangeFormikHandleChange
+autoCompleteOff
+
+formControl
+
+formControlClassNameInputWrapperDateWrapper
+localizationProviderDateAdapterAdapterDayjs
+datePicker
+sizeLarge
+labelBLDateDdMmYyyy
+formatDdMmYyyy
+valueFormikValuesCertIssueDate
+onChangeValue
+formikSetFieldValueCertIssueDateValueTrue
+
+slotProps
+textField
+variantStandard
+errorFalse
+
+
+
+localizationProvider
+formControl
+
+h4B2LoadedQuantityUnitMeasureAndFeedstockTypeH4
+
+formControlClassNameInputWrapper
+textField
+fullWidth
+idVesselName
+nameVesselName
+variantStandard
+labelVesselBargeName
+valueFormikValuesVesselName
+onChangeFormikHandleChange
+autoCompleteOff
+
+formControl
+
+formControlClassNameInputWrapperDateWrapper
+localizationProviderDateAdapterAdapterDayjs
+datePicker
+sizeLarge
+labelBLDateDdMmYyyy
+formatDdMmYyyy
+valueFormikValuesBlDate
+onChangeValue
+formikSetFieldValueBlDateValueTrue
+
+slotProps
+textField
+variantStandard
+errorFalse
+
+
+
+localizationProvider
+formControl
+
+formControlClassNameInputWrapper
+textField
+fullWidth
+idUniqDelNum
+nameUniqDelNum
+variantStandard
+labelAUniqueDeliveryNumber
+valueFormikValuesUniqDelNum
+onChangeFormikHandleChange
+autoCompleteOff
+
+formControl
+formControlClassNameInputWrapper
+textField
+fullWidth
+idLoadingPort
+nameLoadingPort
+variantStandard
+labelLoadingPort
+valueFormikValuesLoadingPort
+onChangeFormikHandleChange
+autoCompleteOff
+
+formControl
+formControlClassNameInputWrapper
+textField
+fullWidth
+idDischargePort
+nameDischargePort
+variantStandard
+labelDischargePort
+valueFormikValuesDischargePort
+onChangeFormikHandleChange
+autoCompleteOff
+
+formControl
+
+formControlComponentFieldsetClassNameInputWrapper
+formLabelComponentLegendClassNameFormLabel
+nameAndAddressOfRecipientNesteCounterparty
+formLabel
+radioGroup
+ariaLabelRecipientAdd
+nameRecipientAdd
+valueFormikValuesRecipientAdd
+
+counterPartiesMapOptionIndx
+formControlLabel
+keyOptionValueIndx
+valueOptionValue
+onChangeFormikHandleChange
+controlRadioColorDefault
+labelOptionLabel
+defaultCheckedFormikValuesRecipientAdd
+
+
+radioGroup
+formControl
+
+formControlClassNameCustomInputWrapper
+textField
+fullWidth
+idLoadedQuantity
+nameLoadedQuantity
+variantStandard
+labelLoadedQuantity
+valueFormikValuesLoadedQuantity
+onChangeFormikHandleChange
+autoCompleteOff
+
+divClassNameMonthVol
+radioGroup
+ariaLabelAvgMonthVolume
+nameAvgMonthVolume
+valueFormikValuesAvgMonthVolume
+
+unitListMapOptionIndx
+formControlLabel
+keyOptionValueIndx
+valueOptionValue
+onChangeFormikHandleChange
+controlRadioColorDefault
+labelOptionLabel
+defaultCheckedFormikValuesGender
+
+
+radioGroup
+div
+formControl
+
+formControlComponentFieldsetClassNameInputWrapper
+formLabelComponentLegendClassNameFormLabel
+feedstockType
+formLabel
+feedBackStockListMapFeedBackStockTypeOptionIndx
+formControlLabel
+keyFeedBackStockTypeOptionValueIndx
+nameFeedBackStockType
+control
+checkbox
+colorDefault
+checkedFormikValuesFeedBackStockTypeIncludes
+feedBackStockTypeOptionValue
+
+valueFeedBackStockTypeOptionValue
+onChangeEv
+ifEvTargetChecked
+formikValuesFeedBackStockTypePush
+evTargetValue
+
+else
+constIndex
+formikValuesFeedBackStockTypeIndexOf
+evTargetValue
+
+ifIndex_1
+formikValuesFeedBackStockTypeSplice
+index
+1
+
+
+
+formikValidateForm
+
+nameFeedBackStockTypeOptionValue
+
+
+labelFeedBackStockTypeOptionLabel
+
+
+formControl
+
+formControlClassNameUploadButtonWrapper
+formLabelComponentLegendClassNameFormLabel
+uploadCerirficate
+formLabel
+buttonVariantContainedComponentLabel
+upload
+input
+idFile
+nameFile
+multipleTrue
+hidden
+typeFile
+onChangeEvent
+setSelectedFileEventTargetFiles
+setFilename
+eventTargetFilesLength_1
+eventTargetFilesLengthFilesSelected
+eventCurrentTargetFiles_0Name
+
+
+
+button
+fileName
+formControl
+brBr
+h4B3MarketComplianceInformationH4
+formControlComponentFieldsetClassNameInputWrapper
+formLabelComponentLegendClassNameFormLabel
+complianceType
+formLabel
+complienceListMapComplienceOption
+formControlLabel
+keyComplienceOptionValue
+nameCompliences
+control
+checkbox
+colorDefault
+checkedFormikValuesCompliencesIncludes
+complienceOptionValue
+
+valueComplienceOptionValue
+onChangeEv
+ifEvTargetChecked
+formikValuesCompliencesPushEvTargetValue
+else
+constIndexFormikValuesCompliencesIndexOf
+evTargetValue
+
+ifIndex_1
+formikValuesCompliencesSpliceIndex_1
+
+
+formikValidateForm
+
+nameComplienceOptionValue
+
+
+labelComplienceOptionLabel
+
+
+formControl
+
+batchDetailsMapBatchIndex
+return
+
+divClassNameCustomInputWrapper
+formLabelComponentLabelClassNameBatchFormlabel
+batchIndex_1
+formLabel
+textField
+fullWidth
+idBatchQuantity
+nameBatch
+variantStandard
+labelLoadedQuantityMt
+valueBatchDetailsIndexQuantity
+onChangeEvent
+updateFieldVal
+event
+batchDetails
+index
+quantity
+batchTypeSeller
+
+
+autoCompleteOff
+
+textField
+fullWidth
+idBatchOrigin
+nameBatchOrigin
+variantStandard
+labelOrigin
+valueBatchDetailsIndexOrigin
+onChangeEvent
+updateFieldVal
+event
+batchDetails
+index
+origin
+batchTypeSeller
+
+
+autoCompleteOff
+
+
+p
+titleRemove
+className
+batchDetailsLength_2
+removeNotAllowed
+remove
+
+onClick
+removeRowIndexBatchDetailsBatchTypeSeller
+
+
+
+p
+div
+
+
+
+p
+classNameAdd
+titleAddNewBatch
+onClickAddNewRowBatchDetails_7BatchTypeSeller
+
+
+p
+div
+div
+tabPanel
+
+sellerCargoDetailsTabContentEnd
+
+traceabilityGhgDetailsTabContentStart
+
+tabPanelValue_1
+snackbar
+anchorOriginVerticalTopHorizontalRight
+openOpenAlert
+autoHideDuration_3000
+onCloseSetOpenAlertOpenAlert
+
+alert
+onCloseSetOpenAlertFalse
+severitySuccess
+sxWidth_100
+
+msg
+alert
+snackbar
+divClassNameTraceabilityGhgformWrapper
+h3TraceabilityGhgInformationDetailsH3
+divClassNameFormWrapper
+h4D1EstateAndMillDataH4
+millBatchDetailsMapMillbatchIndex
+return
+
+cardClassNameEachTranciabilityWrapper
+divClassNameCustomInputWrapper
+textField
+fullWidth
+idMillbatchMillName
+nameMillName
+variantStandard
+labelMillName
+valueMillbatchMillName
+onChangeEvent
+updateFieldVal
+event
+millBatchDetails
+index
+millName
+batchTypeEstatemill
+
+
+autoCompleteOff
+
+textField
+fullWidth
+idMillbatchCertNum
+nameMillbatchCertNum
+variantStandard
+labelCertificateNumberOfTheMill
+valueMillbatchCertNum
+onChangeEvent
+updateFieldVal
+event
+millBatchDetails
+index
+certNum
+batchTypeEstatemill
+
+
+autoCompleteOff
+
+textField
+fullWidth
+idMillbatchEstateName
+nameEstateName
+variantStandard
+labelNameOfEstateSOrSmallholders
+valueMillbatchEstateName
+onChangeEvent
+updateFieldVal
+event
+millBatchDetails
+index
+estateName
+batchTypeEstatemill
+
+
+autoCompleteOff
+
+textField
+fullWidth
+idMillbatchCertNumCover
+nameMillbatchCertNumCover
+variantStandard
+labelCertificateNumberCoveringTheSmallholdersIfApplicable
+valueFormikValuesBatchDetailsCertNumCover
+onChangeEvent
+updateFieldVal
+event
+millBatchDetails
+index
+certNumCover
+batchTypeEstatemill
+
+
+autoCompleteOff
+
+div
+
+divClassNameCustomInputWrapper
+formLabelComponentLabelClassNameOptionLabel
+dec_19th_2007IfEpaCompliant
+formLabel
+select
+classNameOptionEpa
+labelIdIsEpa
+variantStandard
+idMillbatchIsEpa
+nameMillbatchIsEpa
+valueMillbatchIsEpa
+onChangeEvent
+updateFieldVal
+event
+millBatchDetails
+index
+isEpa
+batchTypeEstatemill
+
+
+
+compliantListMapOptionIndx
+menuItem
+keyOptionValueIndx
+valueOptionValue
+
+optionLabel
+menuItem
+
+select
+
+formLabelComponentLabelClassNameOptionLabel
+jan_1th_2008IfEuRedCompliant
+formLabel
+select
+classNameOptionEpa
+labelIdIsEu
+variantStandard
+idMillbatchIsEu
+nameMillbatchIsEu
+valueMillbatchIsEu
+onChangeEvent
+updateFieldVal
+event
+millBatchDetails
+index
+isEu
+batchTypeEstatemill
+
+
+
+compliantListMapOptionIndx
+menuItem
+keyOptionValueIndx
+valueOptionValue
+
+optionLabel
+menuItem
+
+select
+div
+
+divClassNameCustomInputWrapper
+textField
+keyIndexMillbatchOrigin
+fullWidth
+idFormikMillbatchDetails
+nameMillbatchWareHouseName
+variantStandard
+labelNameOfTheWarehousePortPriorToShipment
+valueFormikValuesBatchDetailsOrigin
+onChangeEvent
+updateFieldVal
+event
+millBatchDetails
+index
+wareHouseName
+batchTypeEstatemill
+
+
+autoCompleteOff
+
+textField
+fullWidth
+idFormikCertNumWareHouse
+nameFormikCertNumWareHouse
+variantStandard
+labelCertificateNumberOfTheWarehousePort
+valueFormikValuesBatchDetailsOrigin
+onChangeEvent
+updateFieldVal
+event
+millBatchDetails
+index
+certNumWareHouse
+batchTypeEstatemill
+
+
+autoCompleteOff
+
+textField
+fullWidth
+idMillbatchOrigin
+nameMillbatchOrigin
+variantStandard
+labelLocationOfTheWarehouseCityCountry
+valueFormikValuesBatchDetailsOrigin
+onChangeEvent
+updateFieldVal
+event
+millBatchDetails
+index
+wareHouseLoc
+batchTypeEstatemill
+
+
+autoCompleteOff
+
+div
+
+divClassNameCustomInputWrapper
+textField
+fullWidth
+idMillbatchOrigin
+nameMillbatchOrigin
+variantStandard
+labelLoadedQuantityMt
+valueFormikValuesBatchDetailsOrigin
+onChangeEvent
+updateFieldVal
+event
+millBatchDetails
+index
+loadedQuantity
+batchTypeEstatemill
+
+
+autoCompleteOff
+
+textField
+fullWidth
+idMillbatchOrigin
+nameMillbatchOrigin
+variantStandard
+labelBatchNoFromSectionCTab_1
+valueFormikValuesBatchDetailsOrigin
+onChangeEvent
+updateFieldVal
+event
+millBatchDetails
+index
+batchNo
+batchTypeEstatemill
+
+
+autoCompleteOff
+
+textField
+fullWidth
+idMillbatchOrigin
+nameMillbatchOrigin
+variantStandard
+labelTotalGhgEmissionFromTheSupplyAndUseOfTheFuel
+valueFormikValuesBatchDetailsOrigin
+onChangeEvent
+updateFieldVal
+event
+millBatchDetails
+index
+totalGhgEMission
+batchTypeEstatemill
+
+
+autoCompleteOff
+
+p
+titleRemove
+className
+millBatchDetailsLength_2
+removeNotAllowed
+remove
+
+onClick
+removeRow
+index
+millBatchDetails
+batchTypeEstatemill
+
+
+
+
+p
+div
+card
+
+
+
+p
+classNameAdd
+titleAddNewBatch
+onClick
+addNewRow
+millBatchDetails
+batchDetailsLength
+batchTypeEstatemill
+
+
+
+
+p
+div
+
+divClassNameFormWrapper
+h4D2RefineryAndWarehouseDataH4
+refineryDetailsMapRefinerybatchIndex
+return
+
+cardClassNameEachTranciabilityWrapper
+divClassNameCustomInputWrapper
+textField
+fullWidth
+idRefinerybatchRefinaryName
+nameRefinaryName
+variantStandard
+labelNameOfTheRefinery
+valueRefinerybatchRefinaryName
+onChangeEvent
+updateFieldVal
+event
+refineryDetails
+index
+refinaryName
+batchTypeRefinerywarehousedata
+
+
+autoCompleteOff
+
+textField
+fullWidth
+idRefinerybatchCertNumOfRefinery
+nameRefinerybatchCertNumOfRefinery
+variantStandard
+labelCertificateNumberOfTheRefinery
+valueRefinerybatchCertNumOfRefinery
+onChangeEvent
+updateFieldVal
+event
+refineryDetails
+index
+certNumOfRefinery
+batchTypeRefinerywarehousedata
+
+
+autoCompleteOff
+
+textField
+fullWidth
+idRefinerybatchRefineryLoc
+nameRefineryLoc
+variantStandard
+labelLocationOfTheRefinery
+cityCountry
+valueRefinerybatchRefineryLoc
+onChangeEvent
+updateFieldVal
+event
+refineryDetails
+index
+refineryLoc
+batchTypeRefinerywarehousedata
+
+
+autoCompleteOff
+
+textField
+fullWidth
+idRefinerybatchWarePriorshipment
+nameRefinerybatchWarePriorshipment
+variantStandard
+labelNameOfTheWarehousePortPriorToShipment
+valueRefinerybatchWarePriorshipment
+onChangeEvent
+updateFieldVal
+event
+refineryDetails
+index
+warePriorshipment
+batchTypeRefinerywarehousedata
+
+
+autoCompleteOff
+
+div
+
+divClassNameCustomInputWrapper
+textField
+fullWidth
+idRefinerybatchWareCertNum
+nameRefinerybatchWareCertNum
+variantStandard
+labelCertificateNumberOfTheWarehousePort
+valueRefinerybatchOrigin
+onChangeEvent
+updateFieldVal
+event
+refineryDetails
+index
+wareCertNum
+batchTypeRefinerywarehousedata
+
+
+autoCompleteOff
+
+textField
+fullWidth
+idRefinerybatchWarehousecity
+nameRefinerybatchWarehousecity
+variantStandard
+labelLocationOfTheWarehouse
+cityCountry
+valueRefinerybatchWarehousecity
+onChangeEvent
+updateFieldVal
+event
+refineryDetails
+index
+warehousecity
+batchTypeRefinerywarehousedata
+
+
+autoCompleteOff
+
+textField
+fullWidth
+idRefinerybatchLoadedQuant
+nameRefinerybatchLoadedQuant
+variantStandard
+labelLoaded
+quantityMt
+valueRefinerybatchLoadedQuant
+onChangeEvent
+updateFieldVal
+event
+refineryDetails
+index
+loadedQuant
+batchTypeRefinerywarehousedata
+
+
+autoCompleteOff
+
+div
+
+divClassNameCustomInputWrapper
+textField
+fullWidth
+idRefinerybatchBatchNoTwo
+nameRefinerybatchBatchNoTwo
+variantStandard
+labelBatchNo
+fromSectionCTab_1
+valueRefinerybatchBatchNoTwo
+onChangeEvent
+updateFieldVal
+event
+refineryDetails
+index
+batchNoTwo
+batchTypeRefinerywarehousedata
+
+
+autoCompleteOff
+
+p
+titleRemove
+className
+refineryDetailsLength_2
+removeRefineryRemoveNotAllowed
+removeRefineryRemove
+
+onClick
+removeRow
+index
+refineryDetails
+batchTypeRefinerywarehousedata
+
+
+
+
+p
+div
+card
+
+
+
+p
+classNameAdd
+titleAddNewBatch
+onClick
+addNewRow
+refineryDetails
+batchDetailsLength
+batchTypeRefinerywarehousedata
+
+
+
+
+p
+div
+
+divClassNameFormWrapper
+h4D2VolumesProducedAsShippedH4
+shippedVolumeDetailsMapShippedbatchIndex
+return
+
+cardClassNameEachTranciabilityWrapper
+divClassNameCustomInputWrapper
+textField
+fullWidth
+idShippedbatchEstateNamelast
+nameEstateNamelast
+variantStandard
+labelEstateNames
+valueShippedbatchEstateNamelast
+onChangeEvent
+updateFieldVal
+event
+shippedVolumeDetails
+index
+estateNamelast
+batchTypeShippedproducedvol
+
+
+autoCompleteOff
+
+
+formLabel
+componentLegend
+classNameFormLabelPeriodLabel
+
+periodOfProductionDdMmYy
+formLabel
+localizationProviderDateAdapterAdapterDayjs
+datePicker
+sizeLarge
+labelFrom
+formatDdMmYyyy
+valueShippedbatchProdFrom
+onChangeEvent
+updateFieldVal
+event
+shippedVolumeDetails
+index
+prodFrom
+batchTypeShippedproducedvol
+
+
+slotProps
+textField
+variantStandard
+errorFalse
+
+
+
+localizationProvider
+
+localizationProviderDateAdapterAdapterDayjs
+datePicker
+sizeLarge
+labelTo
+formatDdMmYyyy
+valueShippedbatchProdTo
+onChangeEvent
+updateFieldVal
+event
+shippedVolumeDetails
+index
+prodTo
+batchTypeShippedproducedvol
+
+
+slotProps
+textField
+variantStandard
+errorFalse
+
+
+
+localizationProvider
+div
+
+divClassNameCustomInputWrapper
+textField
+fullWidth
+idShippedbatchFebSupplied
+nameShippedbatchFebSupplied
+variantStandard
+labelFfbSuppliedMt
+valueShippedbatchFebSupplied
+onChangeEvent
+updateFieldVal
+event
+shippedVolumeDetails
+index
+febSupplied
+batchTypeShippedproducedvol
+
+
+autoCompleteOff
+
+textField
+fullWidth
+idShippedbatchCpoProduced
+nameCpoProduced
+variantStandard
+labelCpoProducedMt
+valueShippedbatchCpoProduced
+onChangeEvent
+updateFieldVal
+event
+shippedVolumeDetails
+index
+cpoProduced
+batchTypeShippedproducedvol
+
+
+autoCompleteOff
+
+p
+titleRemove
+className
+shippedVolumeDetailsLength_2
+removeRefineryRemoveNotAllowed
+removeRefineryRemove
+
+onClick
+removeRow
+index
+shippedVolumeDetails
+batchTypeShippedproducedvol
+
+
+
+
+p
+div
+card
+
+
+
+p
+classNameAdd
+titleAddNewBatch
+onClick
+addNewRow
+shippedVolumeDetails
+10
+batchTypeShippedproducedvol
+
+
+
+
+p
+
+formControlClassNameInputWrapper
+button
+classNameButtonClass
+colorPrimary
+variantContained
+fullWidth
+typeSubmit
+width_10px
+onClickFormikHandleSubmit
+
+submit
+button
+formControl
+div
+div
+tabPanel
+
+traceabilityGhgDetailsTabContentEnd
+form
+tabContext
+
+
+
+
+exportDefaultDeliveryForm
