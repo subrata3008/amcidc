@@ -182,17 +182,29 @@ const DeliveryForm = () => {
   const submitDeliveryForm = (formValues) => {
     const files = selectedFile ? [...selectedFile] : [];
     const data = new FormData();
-    files.forEach((file, i) => {
-      data.append(`file-${i}`, file, file.name);
-    });
+    //data.append(`T`, files[0]);
+    Object.keys(formValues).forEach((eachField, i) => {
+      console.log(formValues[eachField])
+      if(eachField === 'file'){
+        files.forEach((file, i) => {
+            data.append(`file-${i}`, file);
+          });
+        }
+        else{
+          data.append(eachField,JSON.stringify(formValues[eachField]));
+        }
+    }); 
+    formValues.formData = data;
     const requestOptions = {
       method: "POST",
-      headers: { 'content-type': 'multipart/form-data' },
+      headers: { 'content-type': 'application/json' },
       mode: "no-cors",
-      body: data,
+      body: data
+      //JSON.stringify(JSON.stringify(formValues, null, 2)),
     };
-    fetch(baseApiUrl + "/createSupplier_Criteria_Input", requestOptions)
+     fetch(baseApiUrl + "/createSupplier_Criteria_Input", requestOptions)
       .then(async (response) => {
+        console.log(response);
         formik.resetForm();
         setOpenAlert(!openAlert);
         setSuccess("success");
