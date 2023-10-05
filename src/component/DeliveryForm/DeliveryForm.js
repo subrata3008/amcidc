@@ -32,7 +32,7 @@ import {
 } from "../../constants";
 import MuiAlert from "@mui/material/Alert";
 import { TabContext, TabPanel } from "@mui/lab";
-import { formSubmitService } from "../services/formService";
+//import { formSubmitService } from "../services/formService";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -602,8 +602,35 @@ const DeliveryForm = () => {
                     </RadioGroup>
                   </div>
                 </FormControl>
+               
 
+
+               
                 <FormControl component="fieldset" className="input-wrapper">
+                  <FormLabel component="legend" className="formLabel">
+                      Feedstock type
+                  </FormLabel>
+                  <RadioGroup
+                    aria-label="feedBackStockType"
+                    name="feedBackStockType"
+                    value={formik.values.feedBackStockType}
+                  >
+                    {feedBackStockList.map((option, indx) => (
+                      <FormControlLabel
+                        key={option.value + indx}
+                        value={option.value}
+                        onChange={formik.handleChange}
+                        control={<Radio color="default" />}
+                        label={option.label}
+                        defaultChecked={formik.values.feedBackStockType === ""}
+                      />
+                    ))}
+                  </RadioGroup>
+                </FormControl>
+
+
+
+                {/* <FormControl component="fieldset" className="input-wrapper">
                   <FormLabel component="legend" className="formLabel">
                     Feedstock type
                   </FormLabel>
@@ -643,7 +670,7 @@ const DeliveryForm = () => {
                       label={feedBackStockTypeOption.label}
                     />
                   ))}
-                </FormControl>
+                </FormControl> */}
 
                 <FormControl className="upload-button-wrapper">
                   <FormLabel component="legend" className="formLabel">

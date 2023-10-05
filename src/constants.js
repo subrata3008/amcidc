@@ -112,29 +112,32 @@ export const complienceList = [{
 }];
 
 export const feedBackStockList = [{
-    value:'palm',
-    label:'Crude palm oil'
+    value:'soyaOil',
+    label:'Soybean Oil Crd US Gulf'
 },{
-    value:'palmWithMethane',
-    label:'Crude palm oil with methane capture'
+    value:'cornOil',
+    label:'Corn Oil Rfnd MidWest'
 },{
-    value:'palmWithMethaneAvoidance',
-    label:'Crude palm oil with methane avoidance'
+    value:'coconutOil',
+    label:'Coconut Oil CRD PHL'
 },{
-    value:'refinedPalm',
-    label:'Refined Bleached Deodorized Palm Oil'
+    value:'peanutOil',
+    label:'Peanut Oil SE Crude'
 },{
-    value:'refinedPalmWithMethane',
-    label:'Refined Bleached Deodorized Palm Oil with methane capture'
-},{
-    value:'refinedPalmOlein',
-    label:'Refined Bleached Deodorized Palm Olein'
+    value:'refinedPeanutOil',
+    label:'Peanut Oil SE Refined'
 },{
     value:'refinedPalmStearine',
-    label:'Refined Bleached Deodorized Palm Stearine'
+    label:'Palm Stearin RBD Malaysia FOB'
 },{
     value:'palmFattyAcid',
-    label:'Palm Fatty Acid Distillate'
+    label:'Palm Fatty Acid Dstl Malaysia FOB'
+},{
+    value:'usedCookingOil',
+    label:'Used Cooking Oil US Gulf'
+},{
+    value:'usedCookingOilIndonesia',
+    label:'Used Cooking Oil Indonesia'
 }];
 
 export const counterParties = [
