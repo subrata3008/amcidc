@@ -462,7 +462,7 @@ const DeliveryForm = () => {
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DatePicker
                       size="large"
-                      label="B/L date (dd/mm/yyyy)"
+                      label="Date of certificate issued"
                       format="DD/MM/YYYY"
                       value={formik.values.certIssueDate}
                       onChange={(value) =>
