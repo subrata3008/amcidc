@@ -697,7 +697,7 @@ const DeliveryForm = () => {
                   {fileName}
                 </FormControl>
                 <br></br>
-                <h4>B3. Market Compliance information.</h4>
+                <h4>Market Compliance information.</h4>
                 <FormControl component="fieldset" className="input-wrapper">
                   <FormLabel component="legend" className="formLabel">
                     Compliance type
@@ -828,7 +828,7 @@ const DeliveryForm = () => {
             <div className="traceability-ghgform-wrapper">
               <h3>Traceability & GHG information details</h3>
               <div className="form-wrapper">
-                <h4>D1. Estate and Mill Data</h4>
+                <h4>Estate and Mill Data</h4>
                 {millBatchDetails.map((millbatch, index) => {
                   return (
                     <>
@@ -1121,7 +1121,7 @@ const DeliveryForm = () => {
               </div>
 
               <div className="form-wrapper">
-                <h4>D2. Refinery and Warehouse Data</h4>
+                <h4>Refinery and Warehouse Data</h4>
                 {refineryDetails.map((refinerybatch, index) => {
                   return (
                     <>
@@ -1319,7 +1319,7 @@ const DeliveryForm = () => {
               </div>
 
               <div className="form-wrapper">
-                <h4>D2. Volumes produced, as shipped. </h4>
+                <h4>Volumes produced, as shipped. </h4>
                 {shippedVolumeDetails.map((shippedbatch, index) => {
                   return (
                     <>
