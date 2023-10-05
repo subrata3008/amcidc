@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useFormik } from "formik";
-import axios from "axios";
 //import { validationSchema } from "../../utils";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -33,6 +32,7 @@ import {
 } from "../../constants";
 import MuiAlert from "@mui/material/Alert";
 import { TabContext, TabPanel } from "@mui/lab";
+import { formSubmitService } from "../services/formService";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -122,28 +122,20 @@ const DeliveryForm = () => {
       shippedVolumeDetails: "",
     },
     //validationSchema: validationSchema,
-    onSubmit: (values) => {
-      // debugger;
-      // console.log(selectedFile);
-      // console.log(batchDetails);
-      // console.log(refineryDetails);
-      // console.log(millBatchDetails);
-      // console.log(shippedVolumeDetails);
-      //const newSelectedFile = [...selectedFile];
-      const files = selectedFile ? [...selectedFile] : [];
-      // const data = new FormData();
-      // files.forEach((file, i) => {
-      //   data.append(`file-${i}`, file, file.name);
-      // });
+    onSubmit: (values) => { 
+      const files = selectedFile ? [...selectedFile] : []; 
       values.file = files;
       values.batchDetails = batchDetails;
       values.millBatchDetails = millBatchDetails;
       values.refineryDetails = refineryDetails;
       values.shippedVolumeDetails = shippedVolumeDetails;
       console.log(values);
-      submitDeliveryForm(values);
+      //formService
+      formSubmission(values,selectedFile); 
     },
   });
+
+
 
   /**
    * Update each filed in loop generic function
@@ -175,77 +167,52 @@ const DeliveryForm = () => {
     }
   };
 
+
   /**
    * Form Sunmission method
    * @param {*} formValues
    */
-  const submitDeliveryForm = (formValues) => {
-    const files = selectedFile ? [...selectedFile] : [];
-    const data = new FormData();
-    //data.append(`T`, files[0]);
-    Object.keys(formValues).forEach((eachField, i) => {
-      console.log(formValues[eachField])
-      if(eachField === 'file'){
-        files.forEach((file, i) => {
-            data.append(`file-${i}`, file);
-          });
-        }
-        else{
-          data.append(eachField,JSON.stringify(formValues[eachField]));
-        }
-    }); 
-    formValues.formData = data;
-    const requestOptions = {
+  const formSubmission = (formValues,filesArr) => { 
+    delete formValues.file;
+    const files = filesArr ? [...filesArr] : [];
+    const requestOptionsFormData = {
       method: "POST",
       headers: { 'content-type': 'application/json' },
       mode: "no-cors",
-      body: data
-      //JSON.stringify(JSON.stringify(formValues, null, 2)),
+      body: JSON.stringify(JSON.stringify(formValues, null, 2)),
     };
-     fetch(baseApiUrl + "/createSupplier_Criteria_Input", requestOptions)
-      .then(async (response) => {
-        console.log(response);
-        formik.resetForm();
-        setOpenAlert(!openAlert);
-        setSuccess("success");
-        setMsg("Data successfully submitted!!");
-      })
-      .catch((error) => {
-        setOpenAlert(!openAlert);
-        formik.resetForm();
-        setSuccess("error");
-        setMsg("Some error occured");
-      });
+    const data = new FormData();
+    console.log(files);
+    files.forEach((file, i) => {
+        data.append(`file-${i}`, file);
+      }); 
+      const uploadRequestOptions = {
+        method: "POST",
+        headers: { 'content-type': 'application/json' },
+        mode: "no-cors",
+        body: data
+      };
+    Promise.all([
+      fetch(baseApiUrl + "/formdataSupplier_Criteria_Input", requestOptionsFormData),
+      fetch(baseApiUrl + "/createSupplier_Criteria_Input", uploadRequestOptions),
+    ]).then(([formData, uploadData]) => 
+        Promise.all([formData.json(), uploadData.json()])
+      )
+    .then(async (formDataResponse,uploadDataResponse) => { 
+      formik.resetForm();
+      setOpenAlert(!openAlert);
+      setSuccess("success");
+      setMsg("Data successfully submitted!!");
+    })
+    .catch((error) => {
+      setOpenAlert(!openAlert);
+      formik.resetForm();
+      setSuccess("error");
+      setMsg("Some error occured");
+    }); 
+}
 
-    // axios
-    // .post(baseApiUrl +'/getSupplier_Criteria_Input', formValues, {
-    //   headers: {
-    //     "Content-Type": "multipart/form-data",
-    //   }})
-    // .then((res) => {
-    //   console.log(res);
-    //   formik.resetForm();
-    //   setOpenAlert(!openAlert);
-    //   setSuccess('success');
-    //   setMsg('Data successfully submitted!');
-    //   // setBatchDetails(initialBatchDetails);
-    //   // setMillBatchDetails(initialMillBatchDetails);
-    //   // setRefineryDetails(initialRefineryDetails);
-    //   // setShippedVolumeDetails(initialShippedVolumeDetails);
-    // })
-    // .catch((err) => {
-    //   setOpenAlert(!openAlert);
-    //   formik.resetForm();
-    //   setSuccess('error');
-    //   setMsg('Some error occured');
-    //   console.error("There was an error!", err);
-    //   // setBatchDetails(initialBatchDetails);
-    //   // setMillBatchDetails(initialMillBatchDetails);
-    //   // setRefineryDetails(initialRefineryDetails);
-    //   // setShippedVolumeDetails(initialShippedVolumeDetails);
-    // }
-    // );
-  };
+
 
   /**
    * Add new Row universal Function
@@ -350,7 +317,7 @@ const DeliveryForm = () => {
               <h3>Seller and Cargo details</h3>
               <div className="form-wrapper">
                 <h4>
-                  A1. Seller Details. Please provide here your own details
+                  Seller Details. Please provide here your own details
                 </h4>
                 <FormControl className="input-wrapper">
                   <TextField
@@ -450,7 +417,7 @@ const DeliveryForm = () => {
                   />
                 </FormControl>
 
-                <h4>A2. Seller's Certificate Details.</h4>
+                <h4>Seller's Certificate Details.</h4>
 
                 <FormControl className="input-wrapper">
                   <TextField
@@ -511,7 +478,7 @@ const DeliveryForm = () => {
                   </LocalizationProvider>
                 </FormControl>
 
-                <h4>B2. Loaded quantity, unit measure and feedstock type</h4>
+                <h4>Loaded quantity, unit measure and feedstock type</h4>
 
                 <FormControl className="input-wrapper">
                   <TextField

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { useFormik } from "formik";
-import axios from "axios";
+import { useFormik } from "formik"; 
 import {
   TextField,
   Radio,
@@ -95,29 +94,7 @@ const RegistrationForm = () => {
         setMsg('Some error occured'); 
       });
   };
-//   const submitRegistrationForm = (formValues) => {
-//     console.log(Object.keys(formValues)) 
-//     axios
-//     .post(baseApiUrl2 +'/createNew_Supplier_data', formValues, {
-//       headers: {
-//         "Content-Type": "multipart/form-data", 
-//       }})
-//     .then((res) => {
-//       console.log(res);
-//       formik.resetForm(); 
-//       setOpenAlert(!openAlert);
-//       setSuccess('success');
-//       setMsg('Data successfully submitted, please check you e-mail for confirmation');
-//     })
-//     .catch((err) => {
-//       setOpenAlert(!openAlert);
-//       formik.resetForm(); 
-//       setSuccess('error');
-//       setMsg('Some error occured');
-//       console.error("There was an error!", err);
-//     }
-//     );
-// }; 
+  
 
 return (
     <>

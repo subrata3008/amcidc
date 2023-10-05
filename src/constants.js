@@ -139,24 +139,21 @@ export const feedBackStockList = [{
 
 export const counterParties = [
     {
-        value:'finOy',
-        label:'Neste Renewable Fuels Oy / PL 95 00095 NESTE FINLAND'
-    },{
-        value:'singPte',
+        value:'singNeste',
         label:'Neste Singapore PTE Ltd / 250 North Bridge Road 17-01 Raffles City Tower Singapore 179101 SINGAPORE'
     },{
-        value:'finOyj',
-        label:'Neste Oyj / PL 95  00095 NESTE  FINLAND'
+        value:'sinclairUsa',
+        label:'HF Sinclair - The Navajo Refinery 501 E Main St, Artesia, NM 88210, United States'
+    },{
+        value:'phillipsUsa',
+        label:'Phillips 66 San Francisco Refinery / 1290 San Pablo Ave, Rodeo, CA 94572, United States'
     },{
         value:'swedAb',
-        label:'Neste Ab / Strandvägen 7 A 114 56 Stockholm SWEDE'
+        label:'BP refinery / Refinería de bp Energía España Poligono industrial El Serrallo s/n, 12100 El Grao de Castellón, Castellón, Spain'
     },{
         value:'suissSA',
-        label:'Neste (Suisse) S.A./ 16, Chemin des  Coquelicots 1214 Vernier SWITZERLAND'
-    },{
-        value:'usInc',
-        label:'Neste US, Inc./ 3040 Post Oak Blvd,  Suite 1700 Houston, TX 77056 UNITED STATES'
-    }
+        label:'Cenovus - Husky Minnedosa Ethanol Plant /500 1st Ave, Minnedosa, MB R0J 1E0, Canada'
+    },
 ]
 
 // From https://bitbucket.org/atlassian/atlaskit-mk-2/raw/4ad0e56649c3e6c973e226b7efaeb28cb240ccb0/packages/core/select/src/data/countries.js
@@ -411,6 +408,6 @@ export const countryList = [
 {value: 'ZW', label: 'Zimbabwe'}
 ];
 
-
-export const baseApiUrl2 = "https://ztb2dcu4lf.execute-api.us-east-1.amazonaws.com";
 export const baseApiUrl = "https://yd31ps78m8.execute-api.us-east-1.amazonaws.com";
+export const baseApiUrl2 = "https://ztb2dcu4lf.execute-api.us-east-1.amazonaws.com";
+//export const baseApiUrlForData = "https://7xffhyozr1.execute-api.us-east-1.amazonaws.com";  
