@@ -552,7 +552,7 @@ const DeliveryForm = () => {
 
                 <FormControl component="fieldset" className="input-wrapper">
                   <FormLabel component="legend" className="formLabel">
-                    Name and address of recipient (Neste Counterparty)
+                    Name and address of recipient 
                   </FormLabel>
                   <RadioGroup
                     aria-label="recipientAdd"
