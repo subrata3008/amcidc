@@ -122,20 +122,16 @@ const DeliveryForm = () => {
       shippedVolumeDetails: "",
     },
     //validationSchema: validationSchema,
-    onSubmit: (values) => { 
-      const files = selectedFile ? [...selectedFile] : []; 
+    onSubmit: (values) => {
+      const files = selectedFile ? [...selectedFile] : [];
       values.file = files;
       values.batchDetails = batchDetails;
       values.millBatchDetails = millBatchDetails;
       values.refineryDetails = refineryDetails;
       values.shippedVolumeDetails = shippedVolumeDetails;
-      console.log(values);
-      //formService
-      formSubmission(values,selectedFile); 
+      formSubmission(values, selectedFile);
     },
   });
-
-
 
   /**
    * Update each filed in loop generic function
@@ -167,52 +163,53 @@ const DeliveryForm = () => {
     }
   };
 
-
   /**
    * Form Sunmission method
    * @param {*} formValues
    */
-  const formSubmission = (formValues,filesArr) => { 
+  const formSubmission = (formValues, filesArr) => {
     delete formValues.file;
     const files = filesArr ? [...filesArr] : [];
     const requestOptionsFormData = {
       method: "POST",
-      headers: { 'content-type': 'application/json' },
+      headers: { "content-type": "application/json" },
       mode: "no-cors",
       body: JSON.stringify(JSON.stringify(formValues, null, 2)),
     };
     const data = new FormData();
-    console.log(files);
     files.forEach((file, i) => {
-        data.append(`file-${i}`, file);
-      }); 
-      const uploadRequestOptions = {
-        method: "POST",
-        headers: { 'content-type': 'application/json' },
-        mode: "no-cors",
-        body: data
-      };
+      data.append(`file-${i}`, file);
+    });
+    const uploadRequestOptions = {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      mode: "no-cors",
+      body: data,
+    };
     Promise.all([
-      fetch(baseApiUrl + "/formdataSupplier_Criteria_Input", requestOptionsFormData),
-      fetch(baseApiUrl + "/createSupplier_Criteria_Input", uploadRequestOptions),
-    ]).then(([formData, uploadData]) => 
-        Promise.all([formData.json(), uploadData.json()])
-      )
-    .then(async (formDataResponse,uploadDataResponse) => { 
+      fetch(
+        baseApiUrl + "/formdataSupplier_Criteria_Input",
+        requestOptionsFormData
+      ),
+      fetch(
+        baseApiUrl + "/createSupplier_Criteria_Input",
+        uploadRequestOptions
+      ),
+    ]).then(([stats, info]) => { 
       formik.resetForm();
       setOpenAlert(!openAlert);
       setSuccess("success");
       setMsg("Data successfully submitted!!");
-    })
-    .catch((error) => {
-      setOpenAlert(!openAlert);
-      formik.resetForm();
-      setSuccess("error");
-      setMsg("Some error occured");
-    }); 
-}
-
-
+  })
+  .catch(error =>{
+    
+    setOpenAlert(!openAlert);
+    formik.resetForm();
+    setSuccess("error");
+    setMsg("Some error occured");
+  });
+ 
+  };
 
   /**
    * Add new Row universal Function
@@ -288,8 +285,7 @@ const DeliveryForm = () => {
                   value={index.toString()}
                   className={index.toString() === tabIndex ? "activeTab" : ""}
                   onClick={() => {
-                    setTabindex(index.toString());
-                    console.log(formik.values.batchDetails);
+                    setTabindex(index.toString()); 
                     formik.setFieldValue("batchDetails", batchDetails);
                   }}
                 />
@@ -316,9 +312,7 @@ const DeliveryForm = () => {
             <div className="deliveryForm-wrapper">
               <h3>Seller and Cargo details</h3>
               <div className="form-wrapper">
-                <h4>
-                  Seller Details. Please provide here your own details
-                </h4>
+                <h4>Seller Details. Please provide here your own details</h4>
                 <FormControl className="input-wrapper">
                   <TextField
                     fullWidth
@@ -552,7 +546,7 @@ const DeliveryForm = () => {
 
                 <FormControl component="fieldset" className="input-wrapper">
                   <FormLabel component="legend" className="formLabel">
-                    Name and address of recipient 
+                    Name and address of recipient
                   </FormLabel>
                   <RadioGroup
                     aria-label="recipientAdd"
@@ -602,13 +596,10 @@ const DeliveryForm = () => {
                     </RadioGroup>
                   </div>
                 </FormControl>
-               
 
-
-               
                 <FormControl component="fieldset" className="input-wrapper">
                   <FormLabel component="legend" className="formLabel">
-                      Feedstock type
+                    Feedstock type
                   </FormLabel>
                   <RadioGroup
                     aria-label="feedBackStockType"
@@ -627,51 +618,7 @@ const DeliveryForm = () => {
                     ))}
                   </RadioGroup>
                 </FormControl>
-
-
-
-                {/* <FormControl component="fieldset" className="input-wrapper">
-                  <FormLabel component="legend" className="formLabel">
-                    Feedstock type
-                  </FormLabel>
-                  {feedBackStockList.map((feedBackStockTypeOption, indx) => (
-                    <FormControlLabel
-                      key={feedBackStockTypeOption.value + indx}
-                      name="feedBackStockType"
-                      control={
-                        <Checkbox
-                          color="default"
-                          checked={formik.values.feedBackStockType.includes(
-                            feedBackStockTypeOption.value
-                          )}
-                          value={feedBackStockTypeOption.value}
-                          onChange={(ev) => {
-                            if (ev.target.checked) {
-                              formik.values.feedBackStockType.push(
-                                ev.target.value
-                              );
-                            } else {
-                              const index =
-                                formik.values.feedBackStockType.indexOf(
-                                  ev.target.value
-                                );
-                              if (index > -1) {
-                                formik.values.feedBackStockType.splice(
-                                  index,
-                                  1
-                                );
-                              }
-                            }
-                            formik.validateForm();
-                          }}
-                          name={feedBackStockTypeOption.value}
-                        />
-                      }
-                      label={feedBackStockTypeOption.label}
-                    />
-                  ))}
-                </FormControl> */}
-
+ 
                 <FormControl className="upload-button-wrapper">
                   <FormLabel component="legend" className="formLabel">
                     Upload Cerirficate :
